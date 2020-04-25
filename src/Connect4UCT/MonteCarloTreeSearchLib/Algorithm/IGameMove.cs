@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonteCarloTreeSearchLib.Algorithm
 {
-    interface IGameMove
+    public interface IGameMove
     {
     }
 }

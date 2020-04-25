@@ -12,6 +12,9 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private int _iterationCount;
         private int _maxIterations;
 
+        private readonly float WIN_REWARD = 1f;
+        private readonly float DRAW_REWARD = 0.5f;
+        private readonly float LOSE_REWARD = 0f;
 
         public MCTreeSearch(MCNode root, int maxIterations = 200)
         {
@@ -27,7 +30,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
                 PerformAlgorithmIteration();
                 _iterationCount++;
             }
-            return SelectResultNode();
+            return ExtractResultMove();
         }
 
         private void PerformAlgorithmIteration()
@@ -45,11 +48,16 @@ namespace MonteCarloTreeSearchLib.Algorithm
 
         /// <summary>
         /// Executes 1st stage of MCTS.
-        /// Starts from root R and selects successive child nodes until a leaf node L is reached.
+        /// Starts from root R and selects successive child nodes (based on UCB formula in our case) until a leaf node L is reached.
         /// </summary>
         private MCNode Selection()
         {
-            throw new NotImplementedException();
+            var tmpNode = _root;
+            while(tmpNode.HasChildren)
+            {
+                tmpNode = FindBestChildNode(tmpNode);
+            }
+            return tmpNode;
         }
 
         /// <summary>
@@ -58,7 +66,11 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// </summary>
         private void Expansion(MCNode node)
         {
-            throw new NotImplementedException();
+            var possibleMoves = node.GetAllPossibleMoves();
+            foreach (var move in possibleMoves)
+            {
+                node.AddChildByMove(move);
+            }
         }
 
         /// <summary>
@@ -67,7 +79,15 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// </summary>
         private MCSimulationResult Simulation(MCNode leaf)
         {
-            throw new NotImplementedException();
+            var tmpState = leaf.GameState.GetDeepCopy();
+            var tmpPhase = leaf.GameState.Phase;
+
+            while(tmpPhase == GamePhase.InProgress)
+            {
+                tmpState.PerformRandomMove();
+                tmpPhase = tmpState.Phase;
+            }
+            return new MCSimulationResult(tmpState);
         }
 
         /// <summary>
@@ -76,10 +96,46 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// </summary>
         private void Backpropagation(MCNode leaf, MCSimulationResult simulationResult)
         {
+            int leafPlayer = leaf.GameState.CurrentPlayer;
+            float reward = CalculateReward(simulationResult, leafPlayer);
+            var tmpNode = leaf;
+            while (tmpNode != _root)
+            {
+                tmpNode.MarkVisit();
+                if (tmpNode.GameState.CurrentPlayer == leafPlayer)
+                {
+                    tmpNode.AddReward(reward);
+                }
+                tmpNode = tmpNode.Parent;
+            }
+            _root.MarkVisit();
+        }
+
+        private float CalculateReward(MCSimulationResult simulationResult, int leafPlayer)
+        {
+            float reward = LOSE_REWARD;
+            if (simulationResult.Phase == GamePhaseMethods.GetPhaseOnPlayerWin(leafPlayer))
+            {
+                reward = WIN_REWARD;
+            }
+            else if (simulationResult.Phase == GamePhase.Draw)
+            {
+                reward = DRAW_REWARD;
+            }
+            else
+            {
+                reward = simulationResult.GetReward(leafPlayer);
+            }
+            return reward;
+        }
+
+        private MCNode FindBestChildNode(MCNode node)
+        {
+            // UCT GOES HERE
             throw new NotImplementedException();
         }
 
-        private IGameMove SelectResultNode()
+        private IGameMove ExtractResultMove()
         {
             throw new NotImplementedException();
         }
