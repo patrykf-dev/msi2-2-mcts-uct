@@ -79,7 +79,7 @@
 }
 
 % Nazwa gry
-\newcommand{\nazwagry}{\textit{Domineering}}
+\newcommand{\nazwagry}{\textit{Connect4}}
 
 % DOCUMENT
 \title{
@@ -141,24 +141,42 @@ def find_next_move(curr_state):
 
 
 \subsection{Algorytm UCT} \label{subsec:uct}
-UCT jest wariantem metody MCTS, który stara się zachować równowagę między eksploatacją bardziej obiecujących ruchów a eksploracją tych rzadko odwiedzonych. Formuła, która odpowiada za wyznaczenie najbardziej obiecującego wierzchołka w fazie wyboru MCTS jest przedstawiona jako wyrażenie (\ref{formula:uct}).
+UCT jest wariantem metody MCTS, który stara się zachować równowagę między eksploatacją bardziej obiecujących ruchów a eksploracją tych rzadko odwiedzonych. Formuła, która odpowiada za wyznaczenie najbardziej obiecującego wierzchołka w fazie wyboru MCTS jest przedstawiona jako wyrażenie (\ref{formula:ucb}).
 
-\begin{equation}\label{formula:uct}
+\begin{equation}\label{formula:ucb}
 \frac{w_i}{n_i} + c \sqrt{\frac{\ln N_i}{n_i}}
 \end{equation}
 
-W wyrażeniu (\ref{formula:uct}), indeks $i$ odnosi się do liczby wykonanych przez algorytm iteracji, czyli czterech faz MCTS. W pierwszym składniku sumy wyrażenia (\ref{formula:uct}), licznik $w_i$ oznacza sumę wszystkich wypłat w danym węźle, a mianownik $n_i$ oznacza liczbę rozegranych symulacji. Zatem ułamek ten przyjmuje wartości większe dla ruchów o większej średniej wygranej, co odpowiada ze eksploatację drzewa. Drugi składnik sumy wyrażenia (\ref{formula:uct}) przyjmuje wartości większe dla wierzchołków, dla których wykonano mniej symulacji i odpowiada eksploracji drzewa. $N_i=\sum_i n_i$, a $c$ jest parametrem eksploracji, który może być dostosowany do badanego problemu.
+W wyrażeniu (\ref{formula:ucb}), indeks $i$ odnosi się do liczby wykonanych przez algorytm iteracji, czyli czterech faz MCTS. W pierwszym składniku sumy wyrażenia (\ref{formula:ucb}), licznik $w_i$ oznacza sumę wszystkich wypłat w danym węźle, a mianownik $n_i$ oznacza liczbę rozegranych symulacji. Zatem ułamek ten przyjmuje wartości większe dla ruchów o większej średniej wygranej, co odpowiada ze eksploatację drzewa. Drugi składnik sumy wyrażenia (\ref{formula:ucb}) przyjmuje wartości większe dla wierzchołków, dla których wykonano mniej symulacji i odpowiada eksploracji drzewa. $N_i=\sum_i n_i$, a $c$ jest parametrem eksploracji, który może być dostosowany do badanego problemu.
 
 
-\subsection{Algorytm PUCT} 
-TODO
+\subsubsection{Usprawnienie UCB-Minimal}
+Przedstawione w \cite{ucbminimal} usprawnienie UCB-Minimal polega na zastosowaniu wzoru (\ref{formula:ucbminimal}) w celu wyboru najbardziej obiecującego wierzchołka w fazie selekcji.
+
+\begin{equation}\label{formula:ucbminimal}
+\frac{w_i}{n_i} + \frac{C_1}{n_i^{C_2}}
+\end{equation}
+
+W wyrażeniu (\ref{formula:ucbminimal}), $C_1$ jest parametrem balansującym eksploatację i eksplorację drzewa. Z kolei $C_2$ to parametr, którego zadaniem jest skorygować zmniejszenie wpływu eksploracji, które następuje z kolejnymi iteracjami algorytmu. Dobór parametrów powinien zostać wykonany empirycznie -- autorzy \cite{ucbminimal} sugerują wartości $C_1=2.5, C_2 = 1$ jako ogólnie optymalne. Przykładowo, badania autorów \cite{tron} wykazały, że najlepiej sprawdzają się wartości $C_1 = 8.4, C_2 = 1.8$.
+
+\subsubsection{Usprawnienie UCB-V} 
+Przedstawione w \cite{ucbv} usprawnienie UCB-V opiera swoją skuteczność na wykorzystaniu wariancji wypłat powodując, że algorytm w fazie selekcji wybiera jak najlepsze i jak najmniej zróżnicowane ruchy w kontekście oczekiwanej wypłaty. UCB-V polega na zastosowaniu wzoru (\ref{formula:ucbv}) w celu wyboru najbardziej obiecującego wierzchołka w fazie selekcji.
+
+\begin{equation}\label{formula:ucbv}
+\frac{w_i}{n_i} + \sqrt{2\frac{\sigma^2_i \cdot \varepsilon}{n_i}} + c \frac{3\cdot\varepsilon}{n_i}
+\end{equation}
+
+W wyrażeniu (\ref{formula:ucbv}), $\sigma^2_i$ oznacza wariancję wypłat w danym węźle, a $\varepsilon$ to tak zwana \textit{funkcja eksploracji}. Zgodnie z sugestią autorów \cite{ucbv}, za \textit{funkcję eksploracji} przyjęta zostanie postać zaprezentowana w (\ref{formula:ucbvexploration}), gdzie $\zeta$ jest parametrem, który powinien zostać dopasowany empirycznie.
+
+\begin{equation}\label{formula:ucbvexploration}
+\varepsilon = \zeta\cdot\ln N_i
+\end{equation}
+
+Autorzy \cite{ucbv} sugerują wartości parametrów $c=1, \zeta=1$ jako optymalne dla prezentowanego usprawnienia. Z drugiej strony, w zastosowaniu go do gry \textit{Tron}, autorzy pracy \cite{tron} najlepsze efekty zaobserwowali dla wartości parametrów $c=1.68, \zeta = 0.54$.
 
 
-\subsection{Algorytm UCT - wariant 2}
-TODO
 
-
-\section{Algorytm zachłanny}
+\section{Podejście heurystyczne}
 TODO
 
 
@@ -208,8 +226,8 @@ Projekt zostanie sporządzony przy użyciu języka C\#. Nie jest planowane użyc
 \begin{thebibliography}{20}
 	\bibitem[1]{banditbased} Levente Kocsis, Csaba Szepesvári, \emph{Bandit based Monte-Carlo Planning}, European Conference on Machine Learning, Berlin, Germany, September 18--22, 2006.
 	\bibitem[2]{mctsanalysis} Steven James, George Konidaris, Benjamin Rosman, \emph{An Analysis of Monte Carlo Tree Search}, University of the Witwatersrand, Johannesburg, South Africa.
-	\bibitem[3]{tron} Pierre Perick, David L. St-Pierre, Francis Maes, Damien Ernst, \emph{Comparison of Different Selection Strategies in Monte-Carlo Tree Search for the Game of Tron},  IEEE Conference on Computational Intelligence and Games, Granada, Spain, September 12--15, 2012.
-	 %http://www.montefiore.ulg.ac.be/~dlstpierre/publications/tron2012.pdf
+	\bibitem[3]{ucbminimal} Francis Maes, Louis Wehenkel, Damien Ernst, \emph{Automatic Discovery of Ranking Formulas for Playing with Multi-armed Bandits}, European Workshop on Reinforcement Learning, Athens, Greece, September 9--11, 2011.
+	\bibitem[4]{tron} Pierre Perick, David L. St-Pierre, Francis Maes, Damien Ernst, \emph{Comparison of Different Selection Strategies in Monte-Carlo Tree Search for the Game of Tron},  IEEE Conference on Computational Intelligence and Games, Granada, Spain, September 12--15, 2012. %https://bit.ly/2y2cvq2
+	 \bibitem[5]{ucbv} Jean-Yves Audibert, Remi Munos, Csaba Szepesvári, \emph{Tuning Bandit Algorithms in Stochastic Environments}, Algorithmic Learning Theory 18th International Conference, Sendai, Japan, October 1--4, 2007. %https://bit.ly/3d9WcX9
 \end{thebibliography}
-
 \end{document}
