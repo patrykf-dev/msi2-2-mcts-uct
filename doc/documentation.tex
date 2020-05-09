@@ -100,7 +100,19 @@
 
 
 \section{Opis \nazwagry}
-TODO
+\nazwagry jest planszową grą logiczną dla dwóch graczy. Rozgrywka jest prowadzona na planszy o szerokości siedmiu pól i długości sześciu pól. Gracze naprzemiennie wrzucają żetony do jednej z siedmiu kolumn, a żetony zajmują najniższą możliwą pozycję w danej kolumnie. Grę wygrywa ten z graczy, który ułoży cztery żetony w poziomie, pionie lub ukosie. W sytuacji w której plansza się zapełni, a nie utworzy się żadna czwórka, dochodzi do remisu.
+
+Bazując na \cite{connect4knowledge}, wynik rozgrywki w \nazwagry jest przesądzony już po pierwszym ruchu przy założeniu, że gracze podejmują bezbłędne decyzje. Rysunek \ref{rys:board} przedstawia planszę z podpisanymi kolumnami, ilustrując jak pierwszy ruch wpływa na rozgrywkę. Jeżeli pierwszy gracz wrzuci swój żeton do jednej z kolumn podpisanych \textit{L}, to przegra, \textit{W} -- wygra, a \textit{D} -- doprowadzi do remisu.
+
+Powołując się na \cite{connect4knowledge}, wszystkich możliwych ustawień żetonów na planszy jest około $4.5 \cdot 10^{13}$. Jest to zbyt duża liczba ustawień, którymi miałby operować algorytm grający w \nazwagry. W związku z tym, stosuje się rozwiązania heurystyczne, takie jak Monte-Carlo Tree Search.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{board_winlose.png}
+	\caption{Plansza \nazwagry}
+	\label{rys:board}
+\end{figure}
+
 
 \section{Algorytmy MCTS}
 Monte-Carlo Tree Search to heurystyka, której celem jest podejmowanie decyzji w pewnych zadaniach sztucznej inteligencji, na przykład wybieranie ruchów w grach. Metoda jest oparta na przeszukiwaniu możliwych stanów gry zapisanych w wierzchołkach drzewa i losowym symulowaniu rozgrywek. Algorytmy MCTS opierają się na rozbudowywaniu drzewa ze stanami gry przez iteracyjne wykonywanie czterech faz. Jednym z najpowszechniejszych wariantów MCTS jest algorytm UCT. Pseudokod opisany w Listingu \ref{lst:mcts} oraz implementacja MCTS w projekcie bazują na \cite{banditbased}. Przykład działania algorytmu ze szczególnym uwzględnieniem kolejnych faz znajduje się na Rysunku \ref{rys:mcts_phases}.
@@ -150,7 +162,7 @@ UCT jest wariantem metody MCTS, który stara się zachować równowagę między 
 W wyrażeniu (\ref{formula:ucb}), indeks $i$ odnosi się do liczby wykonanych przez algorytm iteracji, czyli czterech faz MCTS. W pierwszym składniku sumy wyrażenia (\ref{formula:ucb}), licznik $w_i$ oznacza sumę wszystkich wypłat w danym węźle, a mianownik $n_i$ oznacza liczbę rozegranych symulacji. Zatem ułamek ten przyjmuje wartości większe dla ruchów o większej średniej wygranej, co odpowiada ze eksploatację drzewa. Drugi składnik sumy wyrażenia (\ref{formula:ucb}) przyjmuje wartości większe dla wierzchołków, dla których wykonano mniej symulacji i odpowiada eksploracji drzewa. $N_i=\sum_i n_i$, a $c$ jest parametrem eksploracji, który może być dostosowany do badanego problemu.
 
 
-\subsubsection{Usprawnienie UCB-Minimal}
+\subsubsection{Usprawnienie UCB-Minimal} \label{subsec:ucbmin}
 Przedstawione w \cite{ucbminimal} usprawnienie UCB-Minimal polega na zastosowaniu wzoru (\ref{formula:ucbminimal}) w celu wyboru najbardziej obiecującego wierzchołka w fazie selekcji.
 
 \begin{equation}\label{formula:ucbminimal}
@@ -159,7 +171,7 @@ Przedstawione w \cite{ucbminimal} usprawnienie UCB-Minimal polega na zastosowani
 
 W wyrażeniu (\ref{formula:ucbminimal}), $C_1$ jest parametrem balansującym eksploatację i eksplorację drzewa. Z kolei $C_2$ to parametr, którego zadaniem jest skorygować zmniejszenie wpływu eksploracji, które następuje z kolejnymi iteracjami algorytmu. Dobór parametrów powinien zostać wykonany empirycznie -- autorzy \cite{ucbminimal} sugerują wartości $C_1=2.5, C_2 = 1$ jako ogólnie optymalne. Przykładowo, badania autorów \cite{tron} wykazały, że najlepiej sprawdzają się wartości $C_1 = 8.4, C_2 = 1.8$.
 
-\subsubsection{Usprawnienie UCB-V} 
+\subsubsection{Usprawnienie UCB-V} \label{subsec:ucbv}
 Przedstawione w \cite{ucbv} usprawnienie UCB-V opiera swoją skuteczność na wykorzystaniu wariancji wypłat powodując, że algorytm w fazie selekcji wybiera jak najlepsze i jak najmniej zróżnicowane ruchy w kontekście oczekiwanej wypłaty. UCB-V polega na zastosowaniu wzoru (\ref{formula:ucbv}) w celu wyboru najbardziej obiecującego wierzchołka w fazie selekcji.
 
 \begin{equation}\label{formula:ucbv}
@@ -175,18 +187,22 @@ W wyrażeniu (\ref{formula:ucbv}), $\sigma^2_i$ oznacza wariancję wypłat w dan
 Autorzy \cite{ucbv} sugerują wartości parametrów $c=1, \zeta=1$ jako optymalne dla prezentowanego usprawnienia. Z drugiej strony, w zastosowaniu go do gry \textit{Tron}, autorzy pracy \cite{tron} najlepsze efekty zaobserwowali dla wartości parametrów $c=1.68, \zeta = 0.54$.
 
 
-
-\section{Podejście heurystyczne}
-TODO
-
-
-
-\section{Rozwiązanie}
-
+\section{Podejście heurystyczne} \label{subsec:greedy}
+Proponowane podejście heurystyczne jest podejściem zachłannym. Przy podejmowaniu decyzji o następnym ruchu algorytm będzie starał się ułożyć kolejny żeton tak, by utworzyć jak najwyższą kolumnę lub jak najszerszy rząd. Algorytm w pierwszej kolejności będzie sprawdzał, jak wysokie kolumny i jak szerokie rzędy może uzyskać (odrzucając te potencjalne rzędy i kolumny, które nie osiągną wielkości czterech żetonów). Następnie, algorytm wybierze największy rząd lub kolumnę. W przypadku więcej niż jednego rzędu czy kolumny o największym rozmiarze, wybrana zostanie pierwsza możliwość w kolejności analizowania.
 
 \section{Hipotezy badawcze}
+Projekt ma na celu zbadać, czy algorytmy z grupy MCTS można skutecznie zastosować do grania w \nazwagry. Jeśli tak jest, agent podejmujący decyzje przy użyciu tego rodzaju algorytmów powinien wygrywać co najmniej 75\% rozgrywek z algorytmem zachłannym.
 
+Ponadto, sprawdzone zostanie, jak liczba iteracji wpływa na jakość decyzji podejmowanych przez każdy z trzech wariantów algorytmu UCT. Przypuszcza się, że wraz ze wzrostem liczby iteracji, stosunek wygranych do rozegranych partii z algorytmem zachłannym powinien rosnąć co najmniej liniowo, by od pewnej liczby iteracji wszystkie rozgrywane partie były wygrane.
 
+Wyznaczone zostaną również optymalne wartości pięciu parametrów, wymienionych poniżej.
+\begin{enumerate}
+	\item parametru $c$ w algorytmie UCT,
+	\item parametrów $C_1, C_2$ w algorytmie UCT z usprawnieniem UCB-Minimal,
+	\item parametrów $c, \zeta$ w algorytmie UCT z usprawnieniem UCB-V.\\
+\end{enumerate}
+
+W celu sprawdzenia przedstawionych hipotez zostaną przeprowadzone testy. Jako że na decyzje podejmowane przez algorytmy MCTS silnie wpływa czynnik losowości, dla każdej konfiguracji zostanie przeprowadzone 20 testów. W pierwszej kolejności wyznaczone zostaną najbardziej optymalne wartości parametrów przy ustalonej liczbie iteracji. W tym celu porównane zostaną liczby wygranych rozgrywek pomiędzy agentami korzystającymi z trzech wariantów MCTS i algorytmu zachłannego. Sprawdzone zostanie 5 wartości każdego parametru (co daje 25 konfiguracji w przypadku UCB-Minimal i UCB-V). W następnej kolejności przeprowadzone zostaną testy mające na celu sprawdzenie wpływu iteracji algorytmu na jego skuteczność w zależności od liczby iteracji (z wykorzystaniem najbardziej optymalnych parametrów).
 
 \section{Harmonogram działań}
 W tabeli \ref{tab:schedule} przedstawiono planowany harmonogram działań podczas pracy nad projektem.
@@ -203,31 +219,46 @@ W tabeli \ref{tab:schedule} przedstawiono planowany harmonogram działań podcza
 		06.05.2020 	& Stworzenie dokumentacji projektu \\ 
 		& Zaimplementowanie struktur potrzebnych do operowania na drzewach \\ \hline
 		
-		13.05.2020  & Zaimplementowanie logiki gry \\
+		13.05.2020  & Zaimplementowanie logiki gry \\ \hline
+		
+		20.05.2020	& Zaimplementowanie algorytmu UCT \\
 		& Przygotowanie aplikacji okienkowej \\ \hline
 		
-		20.05.2020	& Zaimplementowanie algorytmu UCT  \\ \hline
+		27.05.2020	&  Zaimplementowanie dwóch wariantów UCT \\ \hline
 		
-		07.05.2020	&  Zaimplementowanie algorytmu heurystycznego \\ 
-		& Zaimplementowanie dwóch wariantów UCT \\ \hline
-		
-		03.06.2020	& Przeprowadzenie eksperymentów w celu weryfikacji hipotez \\ 
-		&  Wstępna weryfikacja postawionych hipotez \\ \hline
-		
-		10.06.2020	& Pełna weryfikacja postawionych hipotez \\ 
+		03.06.2020	& Zaimplementowanie algorytmu heurystycznego \\ 
 		& Stworzenie raportu \\ \hline
+		
+		10.06.2020	& Przeprowadzenie eksperymentów w celu weryfikacji hipotez \\ 
+		&  Weryfikacja postawionych hipotez \\ \hline
 	\end{tabular}
 \end{table}
 
 
 \section{Projekt techniczny}
-Projekt zostanie sporządzony przy użyciu języka C\#. Nie jest planowane użycie żadnych specjalistycznych bibliotek tego języka.
+Projekt zostanie sporządzony przy użyciu języka \textit{C\#}. Nie jest planowane użycie żadnych specjalistycznych bibliotek tego języka. Projekt będzie zrealizowany jako aplikacja okienkowa stworzona przy użyciu biblioteki \textit{Windows Forms}. Aplikacja będzie działać w dwóch trybach:
+
+\begin{enumerate}
+	\item Komputer kontra komputer. Użytkownik aplikacji będzie wybierał rodzaj dwóch agentów, którzy zagrają w \nazwagry.
+	\item Człowiek kontra komputer. W tym trybie użytkownik wybierze rodzaj agenta, z którym będzie mógł przeprowadzić rozgrywkę.\\
+\end{enumerate}
+
+Dostępne rodzaje agentów to:
+
+\begin{itemize}
+	\item UCB1 - decyzje agenta podejmowane będą przy użyciu algorytmu UCT.
+	\item UCB-M - decyzje agenta podejmowane będą przy użyciu algorytmu UCT z usprawnieniem opisanym w rozdziale \ref{subsec:ucbmin}.
+	\item UCB-V - decyzje agenta podejmowane będą przy użyciu algorytmu UCT z usprawnieniem opisanym w rozdziale \ref{subsec:ucbv}.
+	\item GRDY - decyzje agenta podejmowane będą przy użyciu algorytmu zachłannego opisanego w rozdziale \ref{subsec:greedy}.
+	\item RNDM - decyzje agenta będą podejmowane losowo.
+\end{itemize}
 
 \begin{thebibliography}{20}
-	\bibitem[1]{banditbased} Levente Kocsis, Csaba Szepesvári, \emph{Bandit based Monte-Carlo Planning}, European Conference on Machine Learning, Berlin, Germany, September 18--22, 2006.
-	\bibitem[2]{mctsanalysis} Steven James, George Konidaris, Benjamin Rosman, \emph{An Analysis of Monte Carlo Tree Search}, University of the Witwatersrand, Johannesburg, South Africa.
-	\bibitem[3]{ucbminimal} Francis Maes, Louis Wehenkel, Damien Ernst, \emph{Automatic Discovery of Ranking Formulas for Playing with Multi-armed Bandits}, European Workshop on Reinforcement Learning, Athens, Greece, September 9--11, 2011.
-	\bibitem[4]{tron} Pierre Perick, David L. St-Pierre, Francis Maes, Damien Ernst, \emph{Comparison of Different Selection Strategies in Monte-Carlo Tree Search for the Game of Tron},  IEEE Conference on Computational Intelligence and Games, Granada, Spain, September 12--15, 2012. %https://bit.ly/2y2cvq2
-	 \bibitem[5]{ucbv} Jean-Yves Audibert, Remi Munos, Csaba Szepesvári, \emph{Tuning Bandit Algorithms in Stochastic Environments}, Algorithmic Learning Theory 18th International Conference, Sendai, Japan, October 1--4, 2007. %https://bit.ly/3d9WcX9
+	\bibitem[1]{connect4knowledge} Victor Allis, \emph{A Knowledge-based Approach of Connect-Four}, Department of Mathematics and Computer Science Vrije Universiteit Amsterdam, The Netherlands. %https://bit.ly/2SPdKQt
+	\bibitem[2]{banditbased} Levente Kocsis, Csaba Szepesvári, \emph{Bandit based Monte-Carlo Planning}, European Conference on Machine Learning, Berlin, Germany, September 18--22, 2006.
+	\bibitem[3]{mctsanalysis} Steven James, George Konidaris, Benjamin Rosman, \emph{An Analysis of Monte Carlo Tree Search}, University of the Witwatersrand, Johannesburg, South Africa.
+	\bibitem[4]{ucbminimal} Francis Maes, Louis Wehenkel, Damien Ernst, \emph{Automatic Discovery of Ranking Formulas for Playing with Multi-armed Bandits}, European Workshop on Reinforcement Learning, Athens, Greece, September 9--11, 2011.
+	\bibitem[5]{tron} Pierre Perick, David L. St-Pierre, Francis Maes, Damien Ernst, \emph{Comparison of Different Selection Strategies in Monte-Carlo Tree Search for the Game of Tron},  IEEE Conference on Computational Intelligence and Games, Granada, Spain, September 12--15, 2012. %https://bit.ly/2y2cvq2
+	\bibitem[6]{ucbv} Jean-Yves Audibert, Remi Munos, Csaba Szepesvári, \emph{Tuning Bandit Algorithms in Stochastic Environments}, Algorithmic Learning Theory 18th International Conference, Sendai, Japan, October 1--4, 2007. %https://bit.ly/3d9WcX9
 \end{thebibliography}
 \end{document}
