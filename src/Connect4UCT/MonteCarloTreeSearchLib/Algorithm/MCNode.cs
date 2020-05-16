@@ -42,7 +42,8 @@ namespace MonteCarloTreeSearchLib.Algorithm
             {
                 _children = new List<MCNode>();
             }
-            GameState state = GameState.ApplyMove(move);
+            var tmpState = GameState.GetDeepCopy();
+            tmpState.ApplyMove(move);
             _children.Add(new MCNode(state));
         }
 
