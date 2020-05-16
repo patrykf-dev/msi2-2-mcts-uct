@@ -66,7 +66,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// </summary>
         private void Expansion(MCNode node)
         {
-            var possibleMoves = node.GetAllPossibleMoves();
+            var possibleMoves = node.GameState.GetAllPossibleMoves();
             foreach (var move in possibleMoves)
             {
                 node.AddChildByMove(move);
@@ -113,7 +113,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
 
         private float CalculateReward(MCSimulationResult simulationResult, int leafPlayer)
         {
-            float reward = LOSE_REWARD;
+            float reward;
             if (simulationResult.Phase == GamePhaseMethods.GetPhaseOnPlayerWin(leafPlayer))
             {
                 reward = WIN_REWARD;
@@ -129,15 +129,20 @@ namespace MonteCarloTreeSearchLib.Algorithm
             return reward;
         }
 
+        /// <summary>
+        /// Calculates UCT value for children of a given node, with the formula:
+        /// uct_value = (win_score / visits) + 1.41 * sqrt(log(parent_visit) / visits)
+        /// and returns the most profitable one.
+        /// </summary>
         private MCNode FindBestChildNode(MCNode node)
         {
-            // UCT GOES HERE
-            throw new NotImplementedException();
+            return node.FindBestUCTChildNode(1.41f);
         }
 
         private IGameMove ExtractResultMove()
         {
-            throw new NotImplementedException();
+            MCNode bestChild = _root.GetChildWithMaxAveragePrize();
+            return _root.GameState.GetGameMoveLeadingTo(bestChild.GameState);
         }
     }
 }
