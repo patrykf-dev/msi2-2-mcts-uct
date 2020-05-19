@@ -55,6 +55,8 @@
             this.endPanel = new System.Windows.Forms.Panel();
             this.winner = new System.Windows.Forms.Label();
             this.wonLabel = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.drawPanel = new System.Windows.Forms.Label();
             this.StartPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeForMove)).BeginInit();
             this.gamePanel.SuspendLayout();
@@ -67,6 +69,7 @@
             this.gameSplitContainerLeft.SuspendLayout();
             this.buttonPanel.SuspendLayout();
             this.endPanel.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // StartPanel
@@ -100,7 +103,7 @@
             this.timeForMove.Size = new System.Drawing.Size(237, 24);
             this.timeForMove.TabIndex = 5;
             this.timeForMove.Value = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -346,6 +349,7 @@
             // 
             // endPanel
             // 
+            this.endPanel.Controls.Add(this.panel1);
             this.endPanel.Controls.Add(this.wonLabel);
             this.endPanel.Controls.Add(this.winner);
             this.endPanel.Location = new System.Drawing.Point(300, 150);
@@ -373,6 +377,24 @@
             this.wonLabel.TabIndex = 2;
             this.wonLabel.Text = "won!";
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.drawPanel);
+            this.panel1.Location = new System.Drawing.Point(8, 8);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(305, 291);
+            this.panel1.TabIndex = 7;
+            // 
+            // drawPanel
+            // 
+            this.drawPanel.AutoSize = true;
+            this.drawPanel.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.drawPanel.Location = new System.Drawing.Point(77, 111);
+            this.drawPanel.Name = "drawPanel";
+            this.drawPanel.Size = new System.Drawing.Size(113, 46);
+            this.drawPanel.TabIndex = 1;
+            this.drawPanel.Text = "Draw";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -398,6 +420,8 @@
             this.buttonPanel.ResumeLayout(false);
             this.endPanel.ResumeLayout(false);
             this.endPanel.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -430,6 +454,8 @@
         private System.Windows.Forms.Panel endPanel;
         private System.Windows.Forms.Label wonLabel;
         private System.Windows.Forms.Label winner;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label drawPanel;
     }
 }
 

@@ -18,6 +18,8 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         private int _tokensPlaced;
         private int _height;
 
+        public int[,] GetBoard() { return _board; }
+
         public ConnectFourBoard(int width = 7, int height = 6)
         {
             _width = width;

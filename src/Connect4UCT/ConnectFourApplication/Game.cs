@@ -1,4 +1,5 @@
-﻿using MonteCarloTreeSearchLib.ConnectFour;
+﻿using MonteCarloTreeSearchLib.Algorithm;
+using MonteCarloTreeSearchLib.ConnectFour;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,9 +14,7 @@ namespace ConnectFourApplication
         public int SecondsPerMove { get; private set; }
 
         public IPlayer Player1 { get; private set; }
-        public Color Player1Color { get; set; }
         public IPlayer Player2 {get; private set;}
-        public Color Player2Color { get; set; }
 
         public IPlayer ActualMoving { get; private set; }
         public IPlayer ActualNotMoving { get; private set; }
@@ -29,8 +28,21 @@ namespace ConnectFourApplication
             ActualMoving = Player1;
             ActualNotMoving = Player2;
             _board = new ConnectFourBoard();
-            Player1Color = Color.Yellow;
-            Player2Color = Color.Red;
+            Player1.SetColor(Color.Yellow);
+            Player2.SetColor(Color.Red);
+        }
+
+        public bool MoveIsPossible(int column)
+        {
+            var possibleColumns = _board.GetFreeHoles();
+            return possibleColumns.Contains(column);
+        }
+
+        public GamePhase MakeMove(int column)
+        {
+            var moveResult = _board.PerformMove(column);
+            SwitchMovingPlayer();
+            return moveResult;
         }
 
         #region creatingPlayers
@@ -73,6 +85,11 @@ namespace ConnectFourApplication
             IPlayer p = ActualMoving;
             ActualMoving = ActualNotMoving;
             ActualNotMoving = p;
+        }
+
+        public int[,] GetBoard()
+        {
+            return _board.GetBoard();
         }
     }
 }

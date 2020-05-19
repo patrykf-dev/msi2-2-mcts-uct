@@ -10,6 +10,7 @@ namespace ConnectFourApplication
     public class HumanPlayer :IPlayer
     {
         private string _name;
+        private Color _color;
         public HumanPlayer(string name)
         {
             _name = name;
@@ -18,6 +19,16 @@ namespace ConnectFourApplication
         public string GetName()
         {
             return _name;
+        }
+
+        public void SetColor(Color color)
+        {
+            _color = color;
+        }
+
+        public Color GetColor()
+        {
+            return _color;
         }
         public void PerformMove(int column)
         {
