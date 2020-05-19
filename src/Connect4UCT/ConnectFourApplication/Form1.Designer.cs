@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.StartPanel = new System.Windows.Forms.Panel();
+            this.timeForMove = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
             this.gameModeCombobox = new System.Windows.Forms.ComboBox();
             this.gameModeLabel = new System.Windows.Forms.Label();
@@ -45,12 +47,16 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.nextMoveBall = new System.Windows.Forms.Panel();
             this.timeScore = new System.Windows.Forms.Label();
             this.timeLabel = new System.Windows.Forms.Label();
             this.nextPlayerLabel = new System.Windows.Forms.Label();
             this.nextMoveLabel = new System.Windows.Forms.Label();
-            this.nextMoveBall = new System.Windows.Forms.Panel();
+            this.endPanel = new System.Windows.Forms.Panel();
+            this.winner = new System.Windows.Forms.Label();
+            this.wonLabel = new System.Windows.Forms.Label();
             this.StartPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.timeForMove)).BeginInit();
             this.gamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameSplitContainer)).BeginInit();
             this.gameSplitContainer.Panel1.SuspendLayout();
@@ -60,23 +66,59 @@
             this.gameSplitContainerLeft.Panel1.SuspendLayout();
             this.gameSplitContainerLeft.SuspendLayout();
             this.buttonPanel.SuspendLayout();
+            this.endPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // StartPanel
             // 
+            this.StartPanel.Controls.Add(this.timeForMove);
+            this.StartPanel.Controls.Add(this.label1);
             this.StartPanel.Controls.Add(this.startButton);
             this.StartPanel.Controls.Add(this.gameModeCombobox);
             this.StartPanel.Controls.Add(this.gameModeLabel);
             this.StartPanel.Controls.Add(this.mainLabel);
-            this.StartPanel.Location = new System.Drawing.Point(233, 77);
+            this.StartPanel.Location = new System.Drawing.Point(243, 66);
             this.StartPanel.Name = "StartPanel";
             this.StartPanel.Size = new System.Drawing.Size(305, 291);
             this.StartPanel.TabIndex = 0;
             // 
+            // timeForMove
+            // 
+            this.timeForMove.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.timeForMove.Location = new System.Drawing.Point(35, 176);
+            this.timeForMove.Maximum = new decimal(new int[] {
+            1800,
+            0,
+            0,
+            0});
+            this.timeForMove.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.timeForMove.Name = "timeForMove";
+            this.timeForMove.Size = new System.Drawing.Size(237, 24);
+            this.timeForMove.TabIndex = 5;
+            this.timeForMove.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label1.Location = new System.Drawing.Point(35, 148);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(136, 24);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Time for move:";
+            // 
             // startButton
             // 
             this.startButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.startButton.Location = new System.Drawing.Point(78, 166);
+            this.startButton.Location = new System.Drawing.Point(78, 215);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(145, 50);
             this.startButton.TabIndex = 3;
@@ -256,6 +298,14 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
+            // nextMoveBall
+            // 
+            this.nextMoveBall.Location = new System.Drawing.Point(28, 509);
+            this.nextMoveBall.Name = "nextMoveBall";
+            this.nextMoveBall.Size = new System.Drawing.Size(140, 140);
+            this.nextMoveBall.TabIndex = 5;
+            this.nextMoveBall.Paint += new System.Windows.Forms.PaintEventHandler(this.nextMoveBall_Paint_1);
+            // 
             // timeScore
             // 
             this.timeScore.AutoSize = true;
@@ -294,25 +344,48 @@
             this.nextMoveLabel.TabIndex = 1;
             this.nextMoveLabel.Text = "Next move:";
             // 
-            // nextMoveBall
+            // endPanel
             // 
-            this.nextMoveBall.Location = new System.Drawing.Point(28, 509);
-            this.nextMoveBall.Name = "nextMoveBall";
-            this.nextMoveBall.Size = new System.Drawing.Size(140, 140);
-            this.nextMoveBall.TabIndex = 5;
-            this.nextMoveBall.Paint += new System.Windows.Forms.PaintEventHandler(this.nextMoveBall_Paint_1);
+            this.endPanel.Controls.Add(this.wonLabel);
+            this.endPanel.Controls.Add(this.winner);
+            this.endPanel.Location = new System.Drawing.Point(300, 150);
+            this.endPanel.Name = "endPanel";
+            this.endPanel.Size = new System.Drawing.Size(305, 291);
+            this.endPanel.TabIndex = 6;
+            // 
+            // winner
+            // 
+            this.winner.AutoSize = true;
+            this.winner.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.winner.Location = new System.Drawing.Point(31, 86);
+            this.winner.Name = "winner";
+            this.winner.Size = new System.Drawing.Size(250, 46);
+            this.winner.TabIndex = 1;
+            this.winner.Text = "Game mode:";
+            // 
+            // wonLabel
+            // 
+            this.wonLabel.AutoSize = true;
+            this.wonLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.wonLabel.Location = new System.Drawing.Point(85, 174);
+            this.wonLabel.Name = "wonLabel";
+            this.wonLabel.Size = new System.Drawing.Size(105, 46);
+            this.wonLabel.TabIndex = 2;
+            this.wonLabel.Text = "won!";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(835, 661);
-            this.Controls.Add(this.gamePanel);
+            this.Controls.Add(this.endPanel);
             this.Controls.Add(this.StartPanel);
+            this.Controls.Add(this.gamePanel);
             this.Name = "Form1";
             this.Text = "Form1";
             this.StartPanel.ResumeLayout(false);
             this.StartPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.timeForMove)).EndInit();
             this.gamePanel.ResumeLayout(false);
             this.gameSplitContainer.Panel1.ResumeLayout(false);
             this.gameSplitContainer.Panel2.ResumeLayout(false);
@@ -323,6 +396,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.gameSplitContainerLeft)).EndInit();
             this.gameSplitContainerLeft.ResumeLayout(false);
             this.buttonPanel.ResumeLayout(false);
+            this.endPanel.ResumeLayout(false);
+            this.endPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -350,6 +425,11 @@
         private System.Windows.Forms.Label timeScore;
         private System.Windows.Forms.Label timeLabel;
         private System.Windows.Forms.Panel nextMoveBall;
+        private System.Windows.Forms.NumericUpDown timeForMove;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel endPanel;
+        private System.Windows.Forms.Label wonLabel;
+        private System.Windows.Forms.Label winner;
     }
 }
 

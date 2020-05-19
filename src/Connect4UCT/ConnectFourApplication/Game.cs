@@ -17,17 +17,23 @@ namespace ConnectFourApplication
         public IPlayer Player2 {get; private set;}
         public Color Player2Color { get; set; }
 
+        public IPlayer ActualMoving { get; private set; }
+        public IPlayer ActualNotMoving { get; private set; }
+
         private ConnectFourBoard _board;
 
         public Game(Mode mode, int secondsPerMove)
         {
             SecondsPerMove = secondsPerMove;
             CreatePlayers(mode);
+            ActualMoving = Player1;
+            ActualNotMoving = Player2;
             _board = new ConnectFourBoard();
             Player1Color = Color.Yellow;
             Player2Color = Color.Red;
         }
 
+        #region creatingPlayers
         private void CreatePlayers(Mode mode)
         {
             switch (mode)
@@ -59,6 +65,14 @@ namespace ConnectFourApplication
         private IPlayer CreateHumanPlayer(string name)
         {
             return new HumanPlayer(name);
+        }
+        #endregion
+
+        public void SwitchMovingPlayer()
+        {
+            IPlayer p = ActualMoving;
+            ActualMoving = ActualNotMoving;
+            ActualNotMoving = p;
         }
     }
 }
