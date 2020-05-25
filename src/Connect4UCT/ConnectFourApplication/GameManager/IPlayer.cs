@@ -4,9 +4,9 @@ namespace ConnectFourApplication
 {
     public interface IPlayer
     {
-        void SetColor(Color color);
-        Color GetColor();
+        Color Color { get; set; }
         string GetName();
         void PerformMove(int column);
+        int GetPlayerDecision();
     }
 }

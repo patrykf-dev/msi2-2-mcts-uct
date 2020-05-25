@@ -2,10 +2,11 @@
 
 namespace ConnectFourApplication
 {
-    public class HumanPlayer :IPlayer
+    public class HumanPlayer : IPlayer
     {
         private string _name;
-        private Color _color;
+        public Color Color { get; set; }
+
         public HumanPlayer(string name)
         {
             _name = name;
@@ -16,18 +17,14 @@ namespace ConnectFourApplication
             return _name;
         }
 
-        public void SetColor(Color color)
-        {
-            _color = color;
-        }
-
-        public Color GetColor()
-        {
-            return _color;
-        }
         public void PerformMove(int column)
         {
 
+        }
+
+        public int GetPlayerDecision()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace ConnectFourApplication
     public class Game
     {
         public IPlayer Player1 { get; private set; }
-        public IPlayer Player2 {get; private set;}
+        public IPlayer Player2 { get; private set; }
         public IPlayer ActualMoving { get; private set; }
         public IPlayer ActualNotMoving { get; private set; }
 
@@ -15,13 +15,13 @@ namespace ConnectFourApplication
 
         public Game(PlayerType player1, PlayerType player2)
         {
-            Player1 = CreatePlayer(player1);
-            Player2 = CreatePlayer(player2);
+            Player1 = CreatePlayer(player1, 1);
+            Player2 = CreatePlayer(player2, 2);
             ActualMoving = Player1;
             ActualNotMoving = Player2;
             _board = new ConnectFourBoard();
-            Player1.SetColor(Color.Yellow);
-            Player2.SetColor(Color.Red);
+            Player1.Color = Color.Yellow;
+            Player2.Color = Color.Red;
         }
 
         public bool MoveIsPossible(int column)
@@ -37,10 +37,12 @@ namespace ConnectFourApplication
             return moveResult;
         }
 
-        private IPlayer CreatePlayer(PlayerType type)
+        private IPlayer CreatePlayer(PlayerType type, int index)
         {
-            // TODO
-            return new HumanPlayer("ASD");
+            if (type == PlayerType.HUMAN)
+                return new HumanPlayer($"HUMAN PLAYER {index}");
+            else
+                return new ComputerPlayer($"{type} PLAYER {index}", type);
         }
 
         public void SwitchMovingPlayer()

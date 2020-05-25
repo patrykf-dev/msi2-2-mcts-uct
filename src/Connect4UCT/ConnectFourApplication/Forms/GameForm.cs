@@ -9,12 +9,20 @@ namespace ConnectFourApplication
     {
         public const int BALL_SIZE = 90;
         private Game _game;
+        private event Action OnMovePerformed;
 
         public Form1()
         {
             InitializeComponent();
             SetStartValues();
             ConnectButtons();
+            OnMovePerformed += HandleMovePerformed;
+        }
+
+        public new void Dispose()
+        {
+            base.Dispose();
+            OnMovePerformed -= HandleMovePerformed;
         }
 
         private void ConnectButtons()
@@ -36,7 +44,7 @@ namespace ConnectFourApplication
             else if (sender == button5) btnIndex = 5;
             else if (sender == button6) btnIndex = 6;
             else if (sender == button7) btnIndex = 7;
-            TryMakeMove(btnIndex);
+            HandlePlayerDecision(btnIndex);
         }
 
         private void SetStartValues()
@@ -51,18 +59,24 @@ namespace ConnectFourApplication
         {
             Disable(StartPanel);
             Enable(gamePanel);
-            (PlayerType player1, PlayerType player2) = GetPlayerTypes();
-            _game = new Game(player1, player2);
-        }
-
-        private (PlayerType player1, PlayerType player2) GetPlayerTypes()
-        {
             var player1 = PlayerTypeExtensions.GetPlayerType(cbxPlayer1.SelectedIndex);
             var player2 = PlayerTypeExtensions.GetPlayerType(cbxPlayer2.SelectedIndex);
-            return (player1, player2);
+            _game = new Game(player1, player2);
+            HandleMovePerformed();
+        }
+        
+        private void HandleMovePerformed()
+        {
+            if (!(_game.ActualMoving is HumanPlayer))
+            {
+                int holeIndex = _game.ActualMoving.GetPlayerDecision();
+                Console.WriteLine($"PC DECISION IS {holeIndex}");
+                MakeMove(holeIndex);
+                OnMovePerformed?.Invoke();
+            }
         }
 
-        private void TryMakeMove(int column)
+        private void HandlePlayerDecision(int column)
         {
             column--;
             if (!(_game.ActualMoving is HumanPlayer))
@@ -74,8 +88,6 @@ namespace ConnectFourApplication
             {
                 MakeMove(column);
             }
-            gamePanel.Refresh();
-            nextMoveBall.Refresh();
         }
 
         private void MakeMove(int column)
@@ -85,6 +97,9 @@ namespace ConnectFourApplication
             {
                 EndGame(result);
             }
+            gamePanel.Refresh();
+            nextMoveBall.Refresh();
+            OnMovePerformed?.Invoke();
         }
 
         private void ShowEndWindow()
@@ -145,11 +160,11 @@ namespace ConnectFourApplication
                     Color color = Color.Black;
                     if (board[y, x] == 1)
                     {
-                        color = _game.Player1.GetColor();
+                        color = _game.Player1.Color;
                     }
                     else if (board[y, x] == 2)
                     {
-                        color = _game.Player2.GetColor();
+                        color = _game.Player2.Color;
                     }
                     int circleX = BALL_SIZE / 2 + x * BALL_SIZE;
                     int circleY = 540 - (BALL_SIZE / 2 + y * BALL_SIZE);
@@ -161,7 +176,7 @@ namespace ConnectFourApplication
 
         private void nextMoveBall_Paint_1(object sender, PaintEventArgs e)
         {
-            DrawCircle(nextMoveBall, _game.ActualMoving.GetColor(), 70, 70, 70);
+            DrawCircle(nextMoveBall, _game.ActualMoving.Color, 70, 70, 70);
         }
 
         //from https://stackoverflow.com/questions/76993/how-to-double-buffer-net-controls-on-a-form

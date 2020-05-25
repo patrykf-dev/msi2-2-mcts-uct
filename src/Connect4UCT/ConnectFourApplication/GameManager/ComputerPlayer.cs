@@ -2,13 +2,16 @@
 
 namespace ConnectFourApplication
 {
-    public class ComputerPlayer :IPlayer
+    public class ComputerPlayer : IPlayer
     {
         private string _name;
-        private Color _color;
-        public ComputerPlayer(string name)
+        private PlayerType _type;
+        public Color Color { get; set; }
+
+        public ComputerPlayer(string name, PlayerType type)
         {
             _name = name;
+            _type = type;
         }
 
         public string GetName()
@@ -16,18 +19,14 @@ namespace ConnectFourApplication
             return _name;
         }
 
-        public void SetColor(Color color)
-        {
-            _color = color;
-        }
-
-        public Color GetColor()
-        {
-            return _color;
-        }
         public void PerformMove(int column)
         {
 
+        }
+
+        public int GetPlayerDecision()
+        {
+            return 1;
         }
     }
 }
