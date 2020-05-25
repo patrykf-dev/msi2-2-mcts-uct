@@ -1,18 +1,11 @@
 ﻿using MonteCarloTreeSearchLib.Algorithm;
 using MonteCarloTreeSearchLib.ConnectFour;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConnectFourApplication
 {
     public class Game
     {
-        public int SecondsPerMove { get; private set; }
-
         public IPlayer Player1 { get; private set; }
         public IPlayer Player2 {get; private set;}
 
@@ -21,10 +14,10 @@ namespace ConnectFourApplication
 
         private ConnectFourBoard _board;
 
-        public Game(Mode mode, int secondsPerMove)
+        public Game(PlayerType player1, PlayerType player2)
         {
-            SecondsPerMove = secondsPerMove;
-            CreatePlayers(mode);
+            Player1 = CreatePlayer(player1);
+            Player2 = CreatePlayer(player2);
             ActualMoving = Player1;
             ActualNotMoving = Player2;
             _board = new ConnectFourBoard();
@@ -45,40 +38,11 @@ namespace ConnectFourApplication
             return moveResult;
         }
 
-        #region creatingPlayers
-        private void CreatePlayers(Mode mode)
+        private IPlayer CreatePlayer(PlayerType type)
         {
-            switch (mode)
-            {
-                case Mode.ComputerVsComputer:
-                    Player1 = CreateComputerPlayer("Computer 1");
-                    Player2 = CreateComputerPlayer("Computer 2");
-                    break;
-                case Mode.ComputerVsPlayer:
-                    Player1 = CreateComputerPlayer("Computer");
-                    Player2 = CreateHumanPlayer("Player");
-                    break;
-                case Mode.PlayerVsComputer:
-                    Player1 = CreateHumanPlayer("Player");
-                    Player2 = CreateComputerPlayer("Computer");
-                    break;
-                case Mode.PlayerVsPlayer:
-                    Player1 = CreateHumanPlayer("Player 1");
-                    Player2 = CreateHumanPlayer("Player 2");
-                    break;
-            }
+            // TODO
+            return new HumanPlayer("ASD");
         }
-
-        private IPlayer CreateComputerPlayer(string name)
-        {
-            return new ComputerPlayer(name);
-        }
-
-        private IPlayer CreateHumanPlayer(string name)
-        {
-            return new HumanPlayer(name);
-        }
-        #endregion
 
         public void SwitchMovingPlayer()
         {

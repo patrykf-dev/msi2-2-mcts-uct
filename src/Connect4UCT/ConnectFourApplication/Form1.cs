@@ -9,7 +9,6 @@ namespace ConnectFourApplication
     {
         public const int BALL_SIZE = 90;
         private Game _game;
-        private Timer _timer = new Timer();
         private int _timeToMove;
 
         public Form1()
@@ -22,30 +21,23 @@ namespace ConnectFourApplication
         {
             Enable(StartPanel);
             Disable(gamePanel);
-            gameModeCombobox.DataSource = ModeConverter.GetModeConverter().GetAllStrings();
-            gameModeCombobox.SelectedIndex = 0;
-            _timer = new Timer();
+            cbxPlayer1.SelectedIndex = 0;
+            cbxPlayer2.SelectedIndex = 0;
         }
 
         private void startButton_Click(object sender, EventArgs e)
         {
             Disable(StartPanel);
             Enable(gamePanel);
-            Mode mode = ModeConverter.GetModeConverter().GetMode(gameModeCombobox.SelectedItem.ToString());
-            int secondsForMove = (int)timeForMove.Value;
-            _game = new Game(mode, secondsForMove);
-            SetTimer(_game.SecondsPerMove);
+            (PlayerType player1, PlayerType player2) = GetPlayerTypes();
+            _game = new Game(player1, player2);
         }
 
-        private void SetTimer(int seconds)
+        private (PlayerType player1, PlayerType player2) GetPlayerTypes()
         {
-            _timer.Stop();
-            _timer = new Timer();
-            _timer.Tick += new EventHandler(_timer_Tick);
-            _timeToMove = seconds;
-            _timer.Interval = 1000;
-            _timer.Start();
-            UpdatePrintedTime();
+            var player1 = PlayerTypeExtensions.GetPlayerType(cbxPlayer1.SelectedIndex);
+            var player2 = PlayerTypeExtensions.GetPlayerType(cbxPlayer2.SelectedIndex);
+            return (player1, player2);
         }
 
         private void TryMakeMove(int column)
@@ -58,7 +50,6 @@ namespace ConnectFourApplication
 
             if (_game.MoveIsPossible(column))
             {
-                _timer.Stop();
                 MakeMove(column);
             }
             gamePanel.Refresh();
@@ -68,34 +59,15 @@ namespace ConnectFourApplication
         private void MakeMove(int column)
         {
             var result = _game.MakeMove(column);
-            if (result == GamePhase.InProgress)
-            {
-                SetTimer(_game.SecondsPerMove);
-            }
-            else
+            if (result != GamePhase.InProgress)
             {
                 EndGame(result);
-            }
-        }
-
-        private void _timer_Tick(object sender, EventArgs e)
-        {
-            _timeToMove--;
-            UpdatePrintedTime();
-            if (_timeToMove <= 0)
-            {
-                EndGame();
             }
         }
 
         private void ShowEndWindow()
         {
             Disable(gamePanel);
-        }
-
-        private void EndGame()
-        {
-            ShowEndWindow();
         }
 
         private void EndGame(GamePhase phase)
@@ -164,11 +136,6 @@ namespace ConnectFourApplication
         private void nextMoveBall_Paint_1(object sender, PaintEventArgs e)
         {
             DrawCircle(nextMoveBall, _game.ActualMoving.GetColor(), 70, 70, 70);
-        }
-
-        private void UpdatePrintedTime()
-        {
-            timeScore.Text = _timeToMove.ToString();
         }
 
         //from https://stackoverflow.com/questions/76993/how-to-double-buffer-net-controls-on-a-form

@@ -56,8 +56,8 @@
     <Compile Include="Game.cs" />
     <Compile Include="HumanPlayer.cs" />
     <Compile Include="IPlayer.cs" />
-    <Compile Include="Mode.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="PlayerType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

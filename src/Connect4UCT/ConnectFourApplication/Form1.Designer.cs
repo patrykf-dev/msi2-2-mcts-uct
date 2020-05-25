@@ -30,10 +30,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.StartPanel = new System.Windows.Forms.Panel();
-            this.timeForMove = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cbxPlayer2 = new System.Windows.Forms.ComboBox();
             this.startButton = new System.Windows.Forms.Button();
-            this.gameModeCombobox = new System.Windows.Forms.ComboBox();
+            this.cbxPlayer1 = new System.Windows.Forms.ComboBox();
             this.gameModeLabel = new System.Windows.Forms.Label();
             this.mainLabel = new System.Windows.Forms.Label();
             this.gamePanel = new System.Windows.Forms.Panel();
@@ -49,11 +49,9 @@
             this.button7 = new System.Windows.Forms.Button();
             this.nextMoveBall = new System.Windows.Forms.Panel();
             this.timeScore = new System.Windows.Forms.Label();
-            this.timeLabel = new System.Windows.Forms.Label();
             this.nextPlayerLabel = new System.Windows.Forms.Label();
             this.nextMoveLabel = new System.Windows.Forms.Label();
             this.StartPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.timeForMove)).BeginInit();
             this.gamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameSplitContainer)).BeginInit();
             this.gameSplitContainer.Panel1.SuspendLayout();
@@ -67,54 +65,47 @@
             // 
             // StartPanel
             // 
-            this.StartPanel.Controls.Add(this.timeForMove);
-            this.StartPanel.Controls.Add(this.label1);
+            this.StartPanel.Controls.Add(this.label2);
+            this.StartPanel.Controls.Add(this.cbxPlayer2);
             this.StartPanel.Controls.Add(this.startButton);
-            this.StartPanel.Controls.Add(this.gameModeCombobox);
+            this.StartPanel.Controls.Add(this.cbxPlayer1);
             this.StartPanel.Controls.Add(this.gameModeLabel);
             this.StartPanel.Controls.Add(this.mainLabel);
             this.StartPanel.Location = new System.Drawing.Point(243, 66);
             this.StartPanel.Name = "StartPanel";
-            this.StartPanel.Size = new System.Drawing.Size(305, 291);
+            this.StartPanel.Size = new System.Drawing.Size(305, 319);
             this.StartPanel.TabIndex = 0;
             // 
-            // timeForMove
+            // label2
             // 
-            this.timeForMove.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.timeForMove.Location = new System.Drawing.Point(35, 176);
-            this.timeForMove.Maximum = new decimal(new int[] {
-            1800,
-            0,
-            0,
-            0});
-            this.timeForMove.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.timeForMove.Name = "timeForMove";
-            this.timeForMove.Size = new System.Drawing.Size(237, 24);
-            this.timeForMove.TabIndex = 5;
-            this.timeForMove.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label2.Location = new System.Drawing.Point(26, 157);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(82, 24);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Player 2:";
             // 
-            // label1
+            // cbxPlayer2
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(35, 148);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(136, 24);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Time for move:";
+            this.cbxPlayer2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.cbxPlayer2.FormattingEnabled = true;
+            this.cbxPlayer2.Items.AddRange(new object[] {
+            "HUMAN",
+            "PC - GREEDY",
+            "PC - UCB1",
+            "PC - UCB-M",
+            "PC - UCB-V",
+            "RANDOM"});
+            this.cbxPlayer2.Location = new System.Drawing.Point(34, 184);
+            this.cbxPlayer2.Name = "cbxPlayer2";
+            this.cbxPlayer2.Size = new System.Drawing.Size(237, 26);
+            this.cbxPlayer2.TabIndex = 6;
             // 
             // startButton
             // 
             this.startButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.startButton.Location = new System.Drawing.Point(78, 215);
+            this.startButton.Location = new System.Drawing.Point(78, 236);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(145, 50);
             this.startButton.TabIndex = 3;
@@ -122,14 +113,21 @@
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
-            // gameModeCombobox
+            // cbxPlayer1
             // 
-            this.gameModeCombobox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.gameModeCombobox.FormattingEnabled = true;
-            this.gameModeCombobox.Location = new System.Drawing.Point(35, 108);
-            this.gameModeCombobox.Name = "gameModeCombobox";
-            this.gameModeCombobox.Size = new System.Drawing.Size(237, 26);
-            this.gameModeCombobox.TabIndex = 2;
+            this.cbxPlayer1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.cbxPlayer1.FormattingEnabled = true;
+            this.cbxPlayer1.Items.AddRange(new object[] {
+            "HUMAN",
+            "PC - GREEDY",
+            "PC - UCB1",
+            "PC - UCB-M",
+            "PC - UCB-V",
+            "RANDOM"});
+            this.cbxPlayer1.Location = new System.Drawing.Point(35, 108);
+            this.cbxPlayer1.Name = "cbxPlayer1";
+            this.cbxPlayer1.Size = new System.Drawing.Size(237, 26);
+            this.cbxPlayer1.TabIndex = 2;
             // 
             // gameModeLabel
             // 
@@ -137,9 +135,9 @@
             this.gameModeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.gameModeLabel.Location = new System.Drawing.Point(31, 80);
             this.gameModeLabel.Name = "gameModeLabel";
-            this.gameModeLabel.Size = new System.Drawing.Size(120, 24);
+            this.gameModeLabel.Size = new System.Drawing.Size(82, 24);
             this.gameModeLabel.TabIndex = 1;
-            this.gameModeLabel.Text = "Game mode:";
+            this.gameModeLabel.Text = "Player 1:";
             // 
             // mainLabel
             // 
@@ -175,7 +173,6 @@
             // 
             this.gameSplitContainer.Panel2.Controls.Add(this.nextMoveBall);
             this.gameSplitContainer.Panel2.Controls.Add(this.timeScore);
-            this.gameSplitContainer.Panel2.Controls.Add(this.timeLabel);
             this.gameSplitContainer.Panel2.Controls.Add(this.nextPlayerLabel);
             this.gameSplitContainer.Panel2.Controls.Add(this.nextMoveLabel);
             this.gameSplitContainer.Size = new System.Drawing.Size(835, 661);
@@ -311,16 +308,6 @@
             this.timeScore.Size = new System.Drawing.Size(0, 31);
             this.timeScore.TabIndex = 4;
             // 
-            // timeLabel
-            // 
-            this.timeLabel.AutoSize = true;
-            this.timeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.timeLabel.Location = new System.Drawing.Point(8, 326);
-            this.timeLabel.Name = "timeLabel";
-            this.timeLabel.Size = new System.Drawing.Size(185, 31);
-            this.timeLabel.TabIndex = 3;
-            this.timeLabel.Text = "Time to move:";
-            // 
             // nextPlayerLabel
             // 
             this.nextPlayerLabel.AutoSize = true;
@@ -351,7 +338,6 @@
             this.Text = "Form1";
             this.StartPanel.ResumeLayout(false);
             this.StartPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.timeForMove)).EndInit();
             this.gamePanel.ResumeLayout(false);
             this.gameSplitContainer.Panel1.ResumeLayout(false);
             this.gameSplitContainer.Panel2.ResumeLayout(false);
@@ -370,7 +356,7 @@
 
         private System.Windows.Forms.Panel StartPanel;
         private System.Windows.Forms.Button startButton;
-        private System.Windows.Forms.ComboBox gameModeCombobox;
+        private System.Windows.Forms.ComboBox cbxPlayer1;
         private System.Windows.Forms.Label gameModeLabel;
         private System.Windows.Forms.Label mainLabel;
         private System.Windows.Forms.Panel gamePanel;
@@ -387,10 +373,9 @@
         private System.Windows.Forms.Label nextPlayerLabel;
         private System.Windows.Forms.Label nextMoveLabel;
         private System.Windows.Forms.Label timeScore;
-        private System.Windows.Forms.Label timeLabel;
         private System.Windows.Forms.Panel nextMoveBall;
-        private System.Windows.Forms.NumericUpDown timeForMove;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox cbxPlayer2;
     }
 }
 
