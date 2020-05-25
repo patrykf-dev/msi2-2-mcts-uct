@@ -8,7 +8,6 @@ namespace ConnectFourApplication
     {
         public IPlayer Player1 { get; private set; }
         public IPlayer Player2 {get; private set;}
-
         public IPlayer ActualMoving { get; private set; }
         public IPlayer ActualNotMoving { get; private set; }
 
@@ -53,7 +52,7 @@ namespace ConnectFourApplication
 
         public int[,] GetBoard()
         {
-            return _board.GetBoard();
+            return _board.Board;
         }
     }
 }

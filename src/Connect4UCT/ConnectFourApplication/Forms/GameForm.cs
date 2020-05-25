@@ -9,12 +9,34 @@ namespace ConnectFourApplication
     {
         public const int BALL_SIZE = 90;
         private Game _game;
-        private int _timeToMove;
 
         public Form1()
         {
             InitializeComponent();
             SetStartValues();
+            ConnectButtons();
+        }
+
+        private void ConnectButtons()
+        {
+            var buttons = new Button[] { button1, button2, button3, button4, button5, button6, button7 };
+            foreach (var btn in buttons)
+            {
+                btn.Click += HandleMoveClick;
+            }
+        }
+
+        private void HandleMoveClick(object sender, EventArgs e)
+        {
+            int btnIndex = 0;
+            if (sender == button1) btnIndex = 1;
+            else if (sender == button2) btnIndex = 2;
+            else if (sender == button3) btnIndex = 3;
+            else if (sender == button4) btnIndex = 4;
+            else if (sender == button5) btnIndex = 5;
+            else if (sender == button6) btnIndex = 6;
+            else if (sender == button7) btnIndex = 7;
+            TryMakeMove(btnIndex);
         }
 
         private void SetStartValues()
@@ -117,6 +139,7 @@ namespace ConnectFourApplication
         {
             var board = _game.GetBoard();
             for (int x = 0; x < 7; x++)
+            {
                 for (int y = 0; y < 6; y++)
                 {
                     Color color = Color.Black;
@@ -128,9 +151,12 @@ namespace ConnectFourApplication
                     {
                         color = _game.Player2.GetColor();
                     }
-                    DrawCircle(c, color,
-                        BALL_SIZE / 2 + x * BALL_SIZE, 540 - (BALL_SIZE / 2 + y * BALL_SIZE), BALL_SIZE / 2);
+                    int circleX = BALL_SIZE / 2 + x * BALL_SIZE;
+                    int circleY = 540 - (BALL_SIZE / 2 + y * BALL_SIZE);
+                    int circleR = BALL_SIZE / 2;
+                    DrawCircle(c, color, circleX, circleY, circleR);
                 }
+            }
         }
 
         private void nextMoveBall_Paint_1(object sender, PaintEventArgs e)
@@ -147,41 +173,6 @@ namespace ConnectFourApplication
                 cp.ExStyle |= 0x02000000;    // Turn on WS_EX_COMPOSITED
                 return cp;
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            TryMakeMove(1);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            TryMakeMove(2);
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            TryMakeMove(3);
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            TryMakeMove(4);
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            TryMakeMove(5);
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            TryMakeMove(6);
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            TryMakeMove(7);
         }
     }
 }

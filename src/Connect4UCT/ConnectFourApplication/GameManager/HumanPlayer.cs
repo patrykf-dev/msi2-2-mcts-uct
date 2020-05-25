@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace ConnectFourApplication
 {
-    public class ComputerPlayer :IPlayer
+    public class HumanPlayer :IPlayer
     {
         private string _name;
         private Color _color;
-        public ComputerPlayer(string name)
+        public HumanPlayer(string name)
         {
             _name = name;
         }
