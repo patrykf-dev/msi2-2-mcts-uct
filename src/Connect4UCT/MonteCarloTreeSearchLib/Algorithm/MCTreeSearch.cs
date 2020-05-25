@@ -118,6 +118,10 @@ namespace MonteCarloTreeSearchLib.Algorithm
             {
                 reward = WIN_REWARD;
             }
+            else if (simulationResult.Phase == GamePhaseMethods.GetPhaseOnPlayerLose(leafPlayer))
+            {
+                reward = LOSE_REWARD;
+            }
             else if (simulationResult.Phase == GamePhase.Draw)
             {
                 reward = DRAW_REWARD;

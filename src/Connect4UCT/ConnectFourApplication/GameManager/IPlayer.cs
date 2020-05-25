@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using MonteCarloTreeSearchLib.ConnectFour;
+using System.Drawing;
 
 namespace ConnectFourApplication
 {
@@ -7,6 +8,6 @@ namespace ConnectFourApplication
         Color Color { get; set; }
         string GetName();
         void PerformMove(int column);
-        int GetPlayerDecision();
+        int GetPlayerDecision(ConnectFourBoard board);
     }
 }

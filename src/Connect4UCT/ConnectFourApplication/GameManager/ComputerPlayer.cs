@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using MonteCarloTreeSearchLib.Algorithm;
+using MonteCarloTreeSearchLib.ConnectFour;
+using System.Drawing;
 
 namespace ConnectFourApplication
 {
@@ -21,12 +23,12 @@ namespace ConnectFourApplication
 
         public void PerformMove(int column)
         {
-
         }
 
-        public int GetPlayerDecision()
+        public int GetPlayerDecision(ConnectFourBoard board)
         {
-            return 1;
+            UCTDecider decider = new UCTDecider(_type.GetUCTVariant());
+            return decider.PerformDecision(board);
         }
     }
 }

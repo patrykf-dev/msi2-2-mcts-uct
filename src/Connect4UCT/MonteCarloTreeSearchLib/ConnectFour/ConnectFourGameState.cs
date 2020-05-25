@@ -16,6 +16,11 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             _board = new ConnectFourBoard();
         }
 
+        public ConnectFourGameState(ConnectFourBoard board)
+        {
+            _board = board;
+        }
+
         public override void ApplyMove(IGameMove move)
         {
             var connectFourMove = move as ConnectFourGameMove; // useless cast...

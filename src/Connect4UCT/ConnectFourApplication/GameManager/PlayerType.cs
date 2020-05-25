@@ -1,4 +1,7 @@
-﻿namespace ConnectFourApplication
+﻿using MonteCarloTreeSearchLib.Algorithm;
+using System;
+
+namespace ConnectFourApplication
 {
     public enum PlayerType
     {
@@ -12,6 +15,18 @@
 
     public static class PlayerTypeExtensions
     {
+        public static UCTVariant GetUCTVariant(this PlayerType type)
+        {
+            if (type == PlayerType.UCB1)
+                return UCTVariant.UCB1;
+            else if (type == PlayerType.UCB_M)
+                return UCTVariant.UCB_M;
+            else if (type == PlayerType.UCB_M)
+                return UCTVariant.UCB_V;
+            else
+                throw new ArgumentException("Incorrect type passed");
+        }
+
         public static PlayerType GetPlayerType(int index)
         {
             switch (index)

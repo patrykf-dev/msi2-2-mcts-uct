@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using MonteCarloTreeSearchLib.ConnectFour;
+using System.Drawing;
 
 namespace ConnectFourApplication
 {
@@ -22,7 +23,7 @@ namespace ConnectFourApplication
 
         }
 
-        public int GetPlayerDecision()
+        public int GetPlayerDecision(ConnectFourBoard board)
         {
             throw new System.NotImplementedException();
         }

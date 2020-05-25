@@ -10,8 +10,7 @@ namespace ConnectFourApplication
         public IPlayer Player2 { get; private set; }
         public IPlayer ActualMoving { get; private set; }
         public IPlayer ActualNotMoving { get; private set; }
-
-        private ConnectFourBoard _board;
+        public ConnectFourBoard Board { get; private set; }
 
         public Game(PlayerType player1, PlayerType player2)
         {
@@ -19,20 +18,20 @@ namespace ConnectFourApplication
             Player2 = CreatePlayer(player2, 2);
             ActualMoving = Player1;
             ActualNotMoving = Player2;
-            _board = new ConnectFourBoard();
+            Board = new ConnectFourBoard();
             Player1.Color = Color.Yellow;
             Player2.Color = Color.Red;
         }
 
         public bool MoveIsPossible(int column)
         {
-            var possibleColumns = _board.GetFreeHoles();
+            var possibleColumns = Board.GetFreeHoles();
             return possibleColumns.Contains(column);
         }
 
         public GamePhase MakeMove(int column)
         {
-            var moveResult = _board.PerformMove(column);
+            var moveResult = Board.PerformMove(column);
             SwitchMovingPlayer();
             return moveResult;
         }
@@ -54,7 +53,7 @@ namespace ConnectFourApplication
 
         public int[,] GetBoard()
         {
-            return _board.Board;
+            return Board.Board;
         }
     }
 }

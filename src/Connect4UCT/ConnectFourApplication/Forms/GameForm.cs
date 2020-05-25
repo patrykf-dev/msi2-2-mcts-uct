@@ -69,7 +69,7 @@ namespace ConnectFourApplication
         {
             if (!(_game.ActualMoving is HumanPlayer))
             {
-                int holeIndex = _game.ActualMoving.GetPlayerDecision();
+                int holeIndex = _game.ActualMoving.GetPlayerDecision(_game.Board);
                 Console.WriteLine($"PC DECISION IS {holeIndex}");
                 MakeMove(holeIndex);
                 OnMovePerformed?.Invoke();
