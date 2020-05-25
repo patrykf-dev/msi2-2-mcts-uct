@@ -42,7 +42,23 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             SwitchCurrentPlayer();
 
             Phase = CheckMoveResult(column);
+            PrintBoard();
             return Phase;
+        }
+
+        private void PrintBoard()
+        {
+            Console.WriteLine("=======================================");
+            for (int row = 0; row < _height; row++)
+            {
+                for (int col = 0; col < _width; col++)
+                {
+                    Console.Write($"{_board[row, col]} ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine($"{Phase}");
+            Console.WriteLine("=======================================");
         }
 
         public ConnectFourBoard GetDeepCopy()
@@ -70,7 +86,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         {
             for (int i = 0; i < _width; i++)
             {
-                if(_columnHeights[i] < nextBoard._columnHeights[i])
+                if (_columnHeights[i] < nextBoard._columnHeights[i])
                 {
                     return i;
                 }
@@ -81,9 +97,9 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public List<int> GetFreeHoles()
         {
             var holes = new List<int>();
-            for(int i = 0; i < _width; i++)
+            for (int i = 0; i < _width; i++)
             {
-                if(ColumnFull(i) == false)
+                if (ColumnFull(i) == false)
                 {
                     holes.Add(i);
                 }
@@ -114,20 +130,22 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         private GamePhase CheckMoveResult(int column)
         {
             if (BoardFull())
+            {
                 return GamePhase.Draw;
+            }
 
             int playerIndex = GetOpposingPlayer(CurrentPlayer);
 
             // Horizontal check
             int horCount = 1;
             int horIndex = column + 1;
-            while (horIndex < _width && _board[_columnHeights[column], horIndex] == playerIndex)
+            while (horIndex < _width && _board[_columnHeights[column] - 1, horIndex] == playerIndex)
             {
                 horCount++;
                 horIndex++;
             }
             horIndex = column - 1;
-            while (horIndex >= 0 && _board[_columnHeights[column], horIndex] == playerIndex)
+            while (horIndex >= 0 && _board[_columnHeights[column] - 1, horIndex] == playerIndex)
             {
                 horCount++;
                 horIndex--;
@@ -140,13 +158,13 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
             // Vertical check
             int verCount = 1;
-            int verIndex = _columnHeights[column] + 1;
+            int verIndex = _columnHeights[column];
             while (verIndex < _height && _board[verIndex, column] == playerIndex)
             {
                 verCount++;
                 verIndex++;
             }
-            verIndex = _columnHeights[column] - 1;
+            verIndex = _columnHeights[column] - 2;
             while (verIndex >= 0 && _board[verIndex, column] == playerIndex)
             {
                 verCount++;
@@ -159,8 +177,64 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             }
 
             // Ascending diagonal check
+            int ascDiagCount = 1;
+            int ascDiagColIndex = column + 1;
+            int ascDiagRowIndex = _columnHeights[column];
+            while (ascDiagRowIndex < _height &&
+                ascDiagColIndex < _width &&
+                _board[ascDiagRowIndex, ascDiagColIndex] == playerIndex)
+            {
+                ascDiagCount++;
+                ascDiagColIndex++;
+                ascDiagRowIndex++;
+            }
+            ascDiagColIndex = column - 1;
+            ascDiagRowIndex = _columnHeights[column] - 2;
+            while (ascDiagRowIndex >= 0 &&
+                ascDiagColIndex >= 0 &&
+                 _board[ascDiagRowIndex, ascDiagColIndex] == playerIndex)
+            {
+                ascDiagCount++;
+                ascDiagColIndex--;
+                ascDiagRowIndex--;
+            }
+
+            //Console.WriteLine($"asc diag count for player {playerIndex} is {ascDiagCount}");
+            if (ascDiagCount >= 4)
+            {
+                return GamePhaseMethods.GetPhaseOnPlayerWin(playerIndex);
+            }
+
             // Descending diagonal check
-            // TODO!!!!
+            int descDiagCount = 1;
+            int descDiagColIndex = column + 1; // ++
+            int descDiagRowIndex = _columnHeights[column] - 2; // --
+            while (descDiagColIndex < _width &&
+                descDiagRowIndex >= 0 &&
+                _board[descDiagRowIndex, descDiagColIndex] == playerIndex)
+            {
+                descDiagCount++;
+                descDiagColIndex++;
+                descDiagRowIndex--;
+            }
+
+            descDiagColIndex = column - 1; // --
+            descDiagRowIndex = _columnHeights[column]; // ++
+            while (descDiagColIndex >= 0 &&
+                 descDiagRowIndex < _height &&
+                  _board[descDiagRowIndex, descDiagColIndex] == playerIndex)
+            {
+                descDiagCount++;
+                descDiagColIndex--;
+                descDiagRowIndex++;
+            }
+
+            //Console.WriteLine($"desc diag count for player {playerIndex} is {descDiagCount}");
+            if (descDiagCount >= 4)
+            {
+                return GamePhaseMethods.GetPhaseOnPlayerWin(playerIndex);
+            }
+
             return GamePhase.InProgress;
         }
     }
