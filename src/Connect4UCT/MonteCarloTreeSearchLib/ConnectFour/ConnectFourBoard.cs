@@ -42,7 +42,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             SwitchCurrentPlayer();
 
             Phase = CheckMoveResult(column);
-            PrintBoard();
+            //PrintBoard();
             return Phase;
         }
 

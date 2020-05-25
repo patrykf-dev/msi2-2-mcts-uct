@@ -52,11 +52,6 @@
             this.timeLabel = new System.Windows.Forms.Label();
             this.nextPlayerLabel = new System.Windows.Forms.Label();
             this.nextMoveLabel = new System.Windows.Forms.Label();
-            this.endPanel = new System.Windows.Forms.Panel();
-            this.winner = new System.Windows.Forms.Label();
-            this.wonLabel = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.drawPanel = new System.Windows.Forms.Label();
             this.StartPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeForMove)).BeginInit();
             this.gamePanel.SuspendLayout();
@@ -68,8 +63,6 @@
             this.gameSplitContainerLeft.Panel1.SuspendLayout();
             this.gameSplitContainerLeft.SuspendLayout();
             this.buttonPanel.SuspendLayout();
-            this.endPanel.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // StartPanel
@@ -347,60 +340,11 @@
             this.nextMoveLabel.TabIndex = 1;
             this.nextMoveLabel.Text = "Next move:";
             // 
-            // endPanel
-            // 
-            this.endPanel.Controls.Add(this.panel1);
-            this.endPanel.Controls.Add(this.wonLabel);
-            this.endPanel.Controls.Add(this.winner);
-            this.endPanel.Location = new System.Drawing.Point(300, 150);
-            this.endPanel.Name = "endPanel";
-            this.endPanel.Size = new System.Drawing.Size(305, 291);
-            this.endPanel.TabIndex = 6;
-            // 
-            // winner
-            // 
-            this.winner.AutoSize = true;
-            this.winner.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.winner.Location = new System.Drawing.Point(31, 86);
-            this.winner.Name = "winner";
-            this.winner.Size = new System.Drawing.Size(250, 46);
-            this.winner.TabIndex = 1;
-            this.winner.Text = "Game mode:";
-            // 
-            // wonLabel
-            // 
-            this.wonLabel.AutoSize = true;
-            this.wonLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.wonLabel.Location = new System.Drawing.Point(85, 174);
-            this.wonLabel.Name = "wonLabel";
-            this.wonLabel.Size = new System.Drawing.Size(105, 46);
-            this.wonLabel.TabIndex = 2;
-            this.wonLabel.Text = "won!";
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.drawPanel);
-            this.panel1.Location = new System.Drawing.Point(8, 8);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(305, 291);
-            this.panel1.TabIndex = 7;
-            // 
-            // drawPanel
-            // 
-            this.drawPanel.AutoSize = true;
-            this.drawPanel.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.drawPanel.Location = new System.Drawing.Point(77, 111);
-            this.drawPanel.Name = "drawPanel";
-            this.drawPanel.Size = new System.Drawing.Size(113, 46);
-            this.drawPanel.TabIndex = 1;
-            this.drawPanel.Text = "Draw";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(835, 661);
-            this.Controls.Add(this.endPanel);
             this.Controls.Add(this.StartPanel);
             this.Controls.Add(this.gamePanel);
             this.Name = "Form1";
@@ -418,10 +362,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.gameSplitContainerLeft)).EndInit();
             this.gameSplitContainerLeft.ResumeLayout(false);
             this.buttonPanel.ResumeLayout(false);
-            this.endPanel.ResumeLayout(false);
-            this.endPanel.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -451,11 +391,6 @@
         private System.Windows.Forms.Panel nextMoveBall;
         private System.Windows.Forms.NumericUpDown timeForMove;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel endPanel;
-        private System.Windows.Forms.Label wonLabel;
-        private System.Windows.Forms.Label winner;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label drawPanel;
     }
 }
 
