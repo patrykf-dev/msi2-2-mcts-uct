@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonteCarloTreeSearchLib.ConnectFour;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,14 +37,19 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private void PerformAlgorithmIteration()
         {
             var promisingNode = Selection();
+            Console.WriteLine($"\t======={_iterationCount} selection finished");
             Expansion(promisingNode);
+            Console.WriteLine($"\t======={_iterationCount} expansion finished");
             MCNode leafToExplore = promisingNode;
             if (promisingNode.HasChildren)
             {
                 leafToExplore = leafToExplore.GetRandomChild();
             }
             var simulationResult = Simulation(leafToExplore);
+            Console.WriteLine($"\t======={_iterationCount} simulation finished");
             Backpropagation(leafToExplore, simulationResult);
+            Console.WriteLine($"\t======={_iterationCount} backpropagation finished");
+            Console.WriteLine($"{_iterationCount} iteration finished\n\n");
         }
 
         /// <summary>
@@ -67,6 +73,8 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private void Expansion(MCNode node)
         {
             var possibleMoves = node.GameState.GetAllPossibleMoves();
+            var phase = node.GameState.Phase;
+            Console.WriteLine($"Expanding from node with phase {phase}");
             foreach (var move in possibleMoves)
             {
                 node.AddChildByMove(move);
@@ -80,12 +88,13 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private MCSimulationResult Simulation(MCNode leaf)
         {
             var tmpState = leaf.GameState.GetDeepCopy();
-            var tmpPhase = leaf.GameState.Phase;
+            var tmpPhase = tmpState.Phase;
+            Console.WriteLine($"Starting with {tmpPhase}");
 
-            while(tmpPhase == GamePhase.InProgress)
+            while (tmpPhase == GamePhase.InProgress)
             {
-                tmpState.PerformRandomMove();
-                tmpPhase = tmpState.Phase;
+                tmpPhase = tmpState.PerformRandomMove();
+                Console.WriteLine($"{tmpPhase}");
             }
             return new MCSimulationResult(tmpState);
         }

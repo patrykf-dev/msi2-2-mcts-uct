@@ -34,7 +34,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public GamePhase PerformMove(int column)
         {
             if (column < 0 || column > Width || ColumnFull(column) || Phase != GamePhase.InProgress)
-                throw new ArgumentException("Invalid move");
+                throw new ArgumentException($"Invalid move, cannot fill column {column}");
 
             Board[_columnHeights[column], column] = CurrentPlayer;
             _columnHeights[column]++;

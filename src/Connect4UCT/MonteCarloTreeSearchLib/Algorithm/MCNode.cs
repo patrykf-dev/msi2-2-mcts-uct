@@ -16,11 +16,10 @@ namespace MonteCarloTreeSearchLib.Algorithm
 
         private List<MCNode> _children;
         private float _score = 0;
-        private GameState state;
 
         public MCNode(GameState state)
         {
-            this.state = state;
+            GameState = state;
         }
 
         public MCNode GetRandomChild()
@@ -44,7 +43,9 @@ namespace MonteCarloTreeSearchLib.Algorithm
             }
             var tmpState = GameState.GetDeepCopy();
             tmpState.ApplyMove(move);
-            _children.Add(new MCNode(state));
+            var child = new MCNode(tmpState);
+            _children.Add(child);
+            child.Parent = this;
         }
 
         public void AddReward(float reward)

@@ -14,17 +14,23 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public ConnectFourGameState()
         {
             _board = new ConnectFourBoard();
+            CurrentPlayer = 1;
+            Phase = GamePhase.InProgress;
         }
 
         public ConnectFourGameState(ConnectFourBoard board)
         {
             _board = board;
+            CurrentPlayer = 1;
+            Phase = board.Phase;
         }
 
         public override void ApplyMove(IGameMove move)
         {
             var connectFourMove = move as ConnectFourGameMove; // useless cast...
             _board.PerformMove(connectFourMove.HoleIndex);
+            CurrentPlayer = _board.CurrentPlayer;
+            Phase = _board.Phase;
         }
 
         public override List<IGameMove> GetAllPossibleMoves()
@@ -42,6 +48,8 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         {
             ConnectFourGameState state = new ConnectFourGameState();
             state._board = _board.GetDeepCopy();
+            state.Phase = _board.Phase;
+            state.CurrentPlayer = _board.CurrentPlayer;
             return state;
         }
 
@@ -53,16 +61,20 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             return move;
         }
 
-        public override void PerformRandomMove()
+        public override GamePhase PerformRandomMove()
         {
             var holes = _board.GetFreeHoles();
             int randomHole = holes[RandomUtils.GetRandomInt(0, holes.Count)];
-            _board.PerformMove(randomHole);
+            var rc = _board.PerformMove(randomHole);
+            CurrentPlayer = _board.CurrentPlayer;
+            Phase = _board.Phase;
+            return rc;
         }
 
         public override float GetWinScore(int player)
         {
-            throw new NotImplementedException();
+            // TODO
+            return 0.5f;
         }
     }
 }
