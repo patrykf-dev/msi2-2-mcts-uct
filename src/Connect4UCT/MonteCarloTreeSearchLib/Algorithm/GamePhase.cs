@@ -35,5 +35,15 @@ namespace MonteCarloTreeSearchLib.Algorithm
             else
                 throw new IndexOutOfRangeException();
         }
+
+        public static int GetWinnerIndexOnPhase(GamePhase phase)
+        {
+            if (phase == GamePhase.Player1Won)
+                return 1;
+            else if (phase == GamePhase.Player2Won)
+                return 2;
+            else
+                throw new IndexOutOfRangeException();
+        }
     }
 }

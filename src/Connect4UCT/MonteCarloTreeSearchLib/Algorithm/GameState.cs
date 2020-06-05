@@ -16,7 +16,6 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// </summary>
         public abstract GamePhase PerformRandomMove();
         public abstract GameState GetDeepCopy();
-        public abstract float GetWinScore(int player);
         public abstract List<IGameMove> GetAllPossibleMoves();
         public abstract void ApplyMove(IGameMove move);
         public abstract IGameMove GetGameMoveLeadingTo(GameState gameState);

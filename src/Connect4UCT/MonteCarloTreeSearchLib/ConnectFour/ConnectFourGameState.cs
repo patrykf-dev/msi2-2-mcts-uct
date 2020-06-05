@@ -9,18 +9,18 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 {
     public class ConnectFourGameState : GameState
     {
-        private ConnectFourBoard _board;
+        public ConnectFourBoard Board { get; private set; }
 
         public ConnectFourGameState()
         {
-            _board = new ConnectFourBoard();
+            Board = new ConnectFourBoard();
             CurrentPlayer = 1;
             Phase = GamePhase.InProgress;
         }
 
         public ConnectFourGameState(ConnectFourBoard board)
         {
-            _board = board;
+            Board = board;
             CurrentPlayer = 1;
             Phase = board.Phase;
         }
@@ -28,15 +28,15 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public override void ApplyMove(IGameMove move)
         {
             var connectFourMove = move as ConnectFourGameMove; // useless cast...
-            _board.PerformMove(connectFourMove.HoleIndex);
-            CurrentPlayer = _board.CurrentPlayer;
-            Phase = _board.Phase;
+            Board.PerformMove(connectFourMove.HoleIndex);
+            CurrentPlayer = Board.CurrentPlayer;
+            Phase = Board.Phase;
         }
 
         public override List<IGameMove> GetAllPossibleMoves()
         {
             var moves = new List<IGameMove>();
-            var freeHoles = _board.GetFreeHoles();
+            var freeHoles = Board.GetFreeHoles();
             foreach (var hole in freeHoles)
             {
                 moves.Add(new ConnectFourGameMove(hole));
@@ -47,34 +47,28 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public override GameState GetDeepCopy()
         {
             ConnectFourGameState state = new ConnectFourGameState();
-            state._board = _board.GetDeepCopy();
-            state.Phase = _board.Phase;
-            state.CurrentPlayer = _board.CurrentPlayer;
+            state.Board = Board.GetDeepCopy();
+            state.Phase = Board.Phase;
+            state.CurrentPlayer = Board.CurrentPlayer;
             return state;
         }
 
         public override IGameMove GetGameMoveLeadingTo(GameState gameState)
         {
             ConnectFourGameState connectFourstate = gameState as ConnectFourGameState;
-            int differentHole = _board.FindAdditionalHole(connectFourstate._board);
+            int differentHole = Board.FindAdditionalHole(connectFourstate.Board);
             IGameMove move = new ConnectFourGameMove(differentHole);
             return move;
         }
 
         public override GamePhase PerformRandomMove()
         {
-            var holes = _board.GetFreeHoles();
+            var holes = Board.GetFreeHoles();
             int randomHole = holes[RandomUtils.GetRandomInt(0, holes.Count)];
-            var rc = _board.PerformMove(randomHole);
-            CurrentPlayer = _board.CurrentPlayer;
-            Phase = _board.Phase;
+            var rc = Board.PerformMove(randomHole);
+            CurrentPlayer = Board.CurrentPlayer;
+            Phase = Board.Phase;
             return rc;
-        }
-
-        public override float GetWinScore(int player)
-        {
-            // TODO
-            return 0.5f;
         }
     }
 }

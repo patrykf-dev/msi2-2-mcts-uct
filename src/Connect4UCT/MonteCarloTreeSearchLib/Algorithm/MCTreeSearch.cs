@@ -17,7 +17,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private readonly float DRAW_REWARD = 0.5f;
         private readonly float LOSE_REWARD = 0f;
 
-        public MCTreeSearch(MCNode root, int maxIterations = 200)
+        public MCTreeSearch(MCNode root, int maxIterations = 3000)
         {
             _root = root;
             _iterationCount = 0;
@@ -37,19 +37,17 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private void PerformAlgorithmIteration()
         {
             var promisingNode = Selection();
-            Console.WriteLine($"\t======={_iterationCount} selection finished");
-            Expansion(promisingNode);
-            Console.WriteLine($"\t======={_iterationCount} expansion finished");
+            var expandedValidNode = Expansion(promisingNode);
+            if (expandedValidNode == false)
+                return;
+
             MCNode leafToExplore = promisingNode;
             if (promisingNode.HasChildren)
             {
                 leafToExplore = leafToExplore.GetRandomChild();
             }
             var simulationResult = Simulation(leafToExplore);
-            Console.WriteLine($"\t======={_iterationCount} simulation finished");
             Backpropagation(leafToExplore, simulationResult);
-            Console.WriteLine($"\t======={_iterationCount} backpropagation finished");
-            Console.WriteLine($"{_iterationCount} iteration finished\n\n");
         }
 
         /// <summary>
@@ -70,14 +68,22 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// Executes 2nd stage of MCTS.
         /// Unless L ends the game, creates one(or more) child nodes and chooses node C from one of them.
         /// </summary>
-        private void Expansion(MCNode node)
+        private bool Expansion(MCNode node)
         {
             var possibleMoves = node.GameState.GetAllPossibleMoves();
             var phase = node.GameState.Phase;
-            Console.WriteLine($"Expanding from node with phase {phase}");
-            foreach (var move in possibleMoves)
+            if(phase != GamePhase.InProgress)
             {
-                node.AddChildByMove(move);
+                Console.WriteLine("BAD!!!");
+                return false;
+            }
+            else
+            {
+                foreach (var move in possibleMoves)
+                {
+                    node.AddChildByMove(move);
+                }
+                return true;
             }
         }
 
@@ -85,28 +91,26 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// Executes 3rd stage of MCTS.
         /// Complete a random playout from node C.
         /// </summary>
-        private MCSimulationResult Simulation(MCNode leaf)
+        private GamePhase Simulation(MCNode leaf)
         {
             var tmpState = leaf.GameState.GetDeepCopy();
             var tmpPhase = tmpState.Phase;
-            Console.WriteLine($"Starting with {tmpPhase}");
 
             while (tmpPhase == GamePhase.InProgress)
             {
                 tmpPhase = tmpState.PerformRandomMove();
-                Console.WriteLine($"{tmpPhase}");
             }
-            return new MCSimulationResult(tmpState);
+            return tmpPhase;
         }
 
         /// <summary>
         /// Executes 4th stage of MCTS.
         /// Uses the result of the playout to update information in the nodes on the path from C to R.
         /// </summary>
-        private void Backpropagation(MCNode leaf, MCSimulationResult simulationResult)
+        private void Backpropagation(MCNode leaf, GamePhase playoutFinalPhase)
         {
             int leafPlayer = leaf.GameState.CurrentPlayer;
-            float reward = CalculateReward(simulationResult, leafPlayer);
+            float reward = CalculateReward(playoutFinalPhase, leafPlayer);
             var tmpNode = leaf;
             while (tmpNode != _root)
             {
@@ -120,24 +124,24 @@ namespace MonteCarloTreeSearchLib.Algorithm
             _root.MarkVisit();
         }
 
-        private float CalculateReward(MCSimulationResult simulationResult, int leafPlayer)
+        private float CalculateReward(GamePhase playoutFinalPhase, int leafPlayer)
         {
             float reward;
-            if (simulationResult.Phase == GamePhaseMethods.GetPhaseOnPlayerWin(leafPlayer))
+            if (playoutFinalPhase == GamePhaseMethods.GetPhaseOnPlayerWin(leafPlayer))
             {
                 reward = WIN_REWARD;
             }
-            else if (simulationResult.Phase == GamePhaseMethods.GetPhaseOnPlayerLose(leafPlayer))
+            else if (playoutFinalPhase == GamePhaseMethods.GetPhaseOnPlayerLose(leafPlayer))
             {
                 reward = LOSE_REWARD;
             }
-            else if (simulationResult.Phase == GamePhase.Draw)
+            else if (playoutFinalPhase == GamePhase.Draw)
             {
                 reward = DRAW_REWARD;
             }
             else
             {
-                reward = simulationResult.GetReward(leafPlayer);
+                throw new ArgumentException("Illegal state");
             }
             return reward;
         }

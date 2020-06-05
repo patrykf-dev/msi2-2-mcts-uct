@@ -67,7 +67,7 @@ namespace ConnectFourApplication
         
         private void HandleMovePerformed()
         {
-            if (!(_game.ActualMoving is HumanPlayer))
+            if (!(_game.ActualMoving is HumanPlayer) && _game.InProgress)
             {
                 int holeIndex = _game.ActualMoving.GetPlayerDecision(_game.Board);
                 Console.WriteLine($"PC DECISION IS {holeIndex}");
@@ -93,6 +93,7 @@ namespace ConnectFourApplication
         private void MakeMove(int column)
         {
             var result = _game.MakeMove(column);
+            _game.InProgress = (result == GamePhase.InProgress);
             if (result != GamePhase.InProgress)
             {
                 EndGame(result);

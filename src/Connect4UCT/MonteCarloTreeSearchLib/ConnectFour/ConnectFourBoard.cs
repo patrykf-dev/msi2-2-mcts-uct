@@ -46,7 +46,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             return Phase;
         }
 
-        private void PrintBoard()
+        public void PrintBoard()
         {
             Console.WriteLine("=======================================");
             for (int row = 0; row < Height; row++)

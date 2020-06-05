@@ -11,6 +11,7 @@ namespace ConnectFourApplication
         public IPlayer ActualMoving { get; private set; }
         public IPlayer ActualNotMoving { get; private set; }
         public ConnectFourBoard Board { get; private set; }
+        public bool InProgress { get; set; }
 
         public Game(PlayerType player1, PlayerType player2)
         {
@@ -21,6 +22,7 @@ namespace ConnectFourApplication
             Board = new ConnectFourBoard();
             Player1.Color = Color.Yellow;
             Player2.Color = Color.Red;
+            InProgress = true;
         }
 
         public bool MoveIsPossible(int column)
