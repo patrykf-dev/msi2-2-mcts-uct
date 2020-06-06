@@ -9,11 +9,11 @@ namespace MonteCarloTreeSearchLib.Algorithm
     public abstract class GameState
     {
         public GamePhase Phase { get; protected set; }
-        public int CurrentPlayer { get; protected set; }
 
         /// <summary>
         /// This method needs to be well optimized - it is run multiple times per algorithm iteration.
         /// </summary>
+        public abstract int GetCurrentPlayer();
         public abstract GamePhase PerformRandomMove();
         public abstract GameState GetDeepCopy();
         public abstract List<IGameMove> GetAllPossibleMoves();

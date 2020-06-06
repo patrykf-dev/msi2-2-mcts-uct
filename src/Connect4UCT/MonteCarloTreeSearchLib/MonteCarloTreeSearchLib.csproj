@@ -46,6 +46,7 @@
     <Compile Include="Algorithm\GameState.cs" />
     <Compile Include="Algorithm\MCNode.cs" />
     <Compile Include="Algorithm\MCTreeSearch.cs" />
+    <Compile Include="Algorithm\PlayerHelpers.cs" />
     <Compile Include="Algorithm\RandomUtils.cs" />
     <Compile Include="Algorithm\UCTDecider.cs" />
     <Compile Include="ConnectFour\ConnectFourBoard.cs" />

@@ -22,7 +22,7 @@ namespace MonteCarloTreeSearchLib.Serialization
         {
             int childCount = node.HasChildren ? node.Children.Count : 0;
             string columnHeights = (node.GameState as ConnectFourGameState).Board.SerializeHeights();
-            string nodeLine = $"CURRPLAYER: {node.GameState.CurrentPlayer} STATE: {node.GameState.Phase}, {node.VisitsCount}, 0, {node.AveragePrize}, {columnHeights}, {childCount}";
+            string nodeLine = $"CURRPLAYER: {node.GameState.GetCurrentPlayer()} STATE: {node.GameState.Phase}, {node.VisitsCount}, 0, {node.AveragePrize}, {columnHeights}, {childCount}";
             sb.AppendLine(nodeLine);
             if (node.HasChildren == false)
                 return;

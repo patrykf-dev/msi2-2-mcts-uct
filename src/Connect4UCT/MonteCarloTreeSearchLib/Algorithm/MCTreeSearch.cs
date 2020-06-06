@@ -1,9 +1,4 @@
-﻿using MonteCarloTreeSearchLib.ConnectFour;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace MonteCarloTreeSearchLib.Algorithm
 {
@@ -12,6 +7,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private MCNode _root;
         private int _iterationCount;
         private int _maxIterations;
+        private int _playerTurn;
 
         private readonly float WIN_REWARD = 1f;
         private readonly float DRAW_REWARD = 0.5f;
@@ -23,6 +19,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
             _root = root;
             _iterationCount = 0;
             _maxIterations = maxIterations;
+            _playerTurn = root.GameState.GetCurrentPlayer();
         }
 
         public IGameMove CalculateNextMove()
@@ -32,21 +29,16 @@ namespace MonteCarloTreeSearchLib.Algorithm
                 PerformAlgorithmIteration();
                 _iterationCount++;
             }
-            Console.WriteLine($"I made {badCounter} bad moves in {_iterationCount} iterations");
             return ExtractResultMove();
         }
 
-        private int badCounter = 0;
         private void PerformAlgorithmIteration()
         {
             var promisingNode = Selection();
             var expandedValidNode = Expansion(promisingNode);
             if (expandedValidNode == false)
             {
-                badCounter++;
-                (int leafPlayer, float reward) = Backpropagation(promisingNode, promisingNode.GameState.Phase);
-                //Console.WriteLine($"REWARDED PLAYER {leafPlayer} WITH {reward} FOR: ");
-                //(promisingNode.GameState as ConnectFourGameState).Board.PrintBoard();
+                Backpropagation(promisingNode, promisingNode.GameState.Phase);
                 return;
             }
 
@@ -115,9 +107,9 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// Executes 4th stage of MCTS.
         /// Uses the result of the playout to update information in the nodes on the path from C to R.
         /// </summary>
-        private (int, float) Backpropagation(MCNode leaf, GamePhase playoutFinalPhase)
+        private void Backpropagation(MCNode leaf, GamePhase playoutFinalPhase)
         {
-            int leafPlayer = leaf.GameState.CurrentPlayer;
+            int leafPlayer = leaf.GameState.GetCurrentPlayer();
             float reward = CalculateReward(playoutFinalPhase, leafPlayer);
             var tmpNode = leaf;
             while (tmpNode != _root)
@@ -128,7 +120,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
                 {
                     tmpNode.AddReward(reward);
                 }
-                else if (tmpNode.GameState.CurrentPlayer == leafPlayer)
+                else if (tmpNode.GameState.GetCurrentPlayer() == leafPlayer)
                 {
                     tmpNode.AddReward(reward);
                 }
@@ -136,29 +128,18 @@ namespace MonteCarloTreeSearchLib.Algorithm
                 tmpNode = tmpNode.Parent;
             }
             _root.MarkVisit();
-            return (leafPlayer, reward);
         }
 
         private float CalculateReward(GamePhase playoutFinalPhase, int leafPlayer)
         {
-            float reward;
-            if (playoutFinalPhase == GamePhaseMethods.GetPhaseOnPlayerWin(leafPlayer))
-            {
-                reward = WIN_REWARD;
-            }
-            else if (playoutFinalPhase == GamePhaseMethods.GetPhaseOnPlayerLose(leafPlayer))
-            {
-                reward = LOSE_REWARD;
-            }
+            if (playoutFinalPhase == PlayerHelpers.GetPhaseOnPlayerWin(leafPlayer))
+                return WIN_REWARD;
+            else if (playoutFinalPhase == PlayerHelpers.GetPhaseOnPlayerLose(leafPlayer))
+                return LOSE_REWARD;
             else if (playoutFinalPhase == GamePhase.Draw)
-            {
-                reward = DRAW_REWARD;
-            }
+                return DRAW_REWARD;
             else
-            {
                 throw new ArgumentException("Illegal state");
-            }
-            return reward;
         }
 
         /// <summary>
@@ -168,13 +149,12 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// </summary>
         private MCNode FindBestChildNode(MCNode node)
         {
-            return node.FindBestUCTChildNode(1.41f);
+            return node.FindBestUCTChildNode(1.41f, _playerTurn);
         }
 
         private IGameMove ExtractResultMove()
         {
             MCNode bestChild = _root.GetChildWithMaxAveragePrize();
-            //MCNode bestChild = _root.GetChildWithMaxVisitsCount();
             return _root.GameState.GetGameMoveLeadingTo(bestChild.GameState);
         }
     }

@@ -123,12 +123,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
         private void SwitchCurrentPlayer()
         {
-            CurrentPlayer = (CurrentPlayer == 1) ? 2 : 1;
-        }
-
-        private int GetOpposingPlayer(int player)
-        {
-            return player == 1 ? 2 : 1;
+            CurrentPlayer = PlayerHelpers.GetOpposingPlayer(CurrentPlayer);
         }
 
         private bool ColumnFull(int hole)
@@ -143,7 +138,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
                 return GamePhase.Draw;
             }
 
-            int playerIndex = GetOpposingPlayer(CurrentPlayer);
+            int playerIndex = PlayerHelpers.GetOpposingPlayer(CurrentPlayer);
 
             // Horizontal check
             int horCount = 1;
@@ -162,7 +157,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
             if (horCount >= 4)
             {
-                return GamePhaseMethods.GetPhaseOnPlayerWin(playerIndex);
+                return PlayerHelpers.GetPhaseOnPlayerWin(playerIndex);
             }
 
             // Vertical check
@@ -182,7 +177,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
             if (verCount >= 4)
             {
-                return GamePhaseMethods.GetPhaseOnPlayerWin(playerIndex);
+                return PlayerHelpers.GetPhaseOnPlayerWin(playerIndex);
             }
 
             // Ascending diagonal check
@@ -211,7 +206,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             //Console.WriteLine($"asc diag count for player {playerIndex} is {ascDiagCount}");
             if (ascDiagCount >= 4)
             {
-                return GamePhaseMethods.GetPhaseOnPlayerWin(playerIndex);
+                return PlayerHelpers.GetPhaseOnPlayerWin(playerIndex);
             }
 
             // Descending diagonal check
@@ -241,7 +236,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             //Console.WriteLine($"desc diag count for player {playerIndex} is {descDiagCount}");
             if (descDiagCount >= 4)
             {
-                return GamePhaseMethods.GetPhaseOnPlayerWin(playerIndex);
+                return PlayerHelpers.GetPhaseOnPlayerWin(playerIndex);
             }
 
             return GamePhase.InProgress;

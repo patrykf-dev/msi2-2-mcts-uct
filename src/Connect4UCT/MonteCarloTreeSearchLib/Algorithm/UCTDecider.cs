@@ -22,10 +22,9 @@ namespace MonteCarloTreeSearchLib.Algorithm
             var state = new ConnectFourGameState(board);
             var root = new MCNode(state);
             var search = new MCTreeSearch(root);
-
             var abstractMove = search.CalculateNextMove();
             var gameMove = abstractMove as ConnectFourGameMove;
-            CsvSerializer.SaveTree(root, $"tree_newest.csv");
+            //CsvSerializer.SaveTree(root, $"tree_newest.csv");
             return gameMove.HoleIndex;
         }
     }

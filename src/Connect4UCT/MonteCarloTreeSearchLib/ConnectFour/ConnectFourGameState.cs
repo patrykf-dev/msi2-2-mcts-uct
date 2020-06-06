@@ -11,14 +11,12 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public ConnectFourGameState()
         {
             Board = new ConnectFourBoard();
-            CurrentPlayer = 1;
             Phase = GamePhase.InProgress;
         }
 
         public ConnectFourGameState(ConnectFourBoard board)
         {
             Board = board;
-            CurrentPlayer = board.CurrentPlayer;
             Phase = board.Phase;
         }
 
@@ -26,7 +24,6 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         {
             var connectFourMove = move as ConnectFourGameMove; // useless cast...
             Board.PerformMove(connectFourMove.HoleIndex);
-            CurrentPlayer = Board.CurrentPlayer;
             Phase = Board.Phase;
         }
 
@@ -45,7 +42,6 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             ConnectFourGameState state = new ConnectFourGameState();
             state.Board = Board.GetDeepCopy();
             state.Phase = Board.Phase;
-            state.CurrentPlayer = Board.CurrentPlayer;
             return state;
         }
 
@@ -62,9 +58,13 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             var holes = Board.GetFreeHoles();
             int randomHole = holes[RandomUtils.GetRandomInt(0, holes.Count)];
             var rc = Board.PerformMove(randomHole);
-            CurrentPlayer = Board.CurrentPlayer;
             Phase = Board.Phase;
             return rc;
+        }
+
+        public override int GetCurrentPlayer()
+        {
+            return PlayerHelpers.GetOpposingPlayer(Board.CurrentPlayer);
         }
     }
 }
