@@ -12,9 +12,9 @@ namespace MonteCarloTreeSearchLib.Algorithm
         public MCNode Parent { get; private set; }
         public int VisitsCount { get; private set; } = 0;
         public float AveragePrize { get; private set; } = 0f;
-        public bool HasChildren => _children != null && _children.Count > 0;
+        public List<MCNode> Children { get; private set; }
+        public bool HasChildren => Children != null && Children.Count > 0;
 
-        private List<MCNode> _children;
         private float _score = 0;
 
         public MCNode(GameState state)
@@ -30,21 +30,21 @@ namespace MonteCarloTreeSearchLib.Algorithm
             }
             else
             {
-                int index = RandomUtils.GetRandomInt(0, _children.Count);
-                return _children[index];
+                int index = RandomUtils.GetRandomInt(0, Children.Count);
+                return Children[index];
             }
         }
 
         public void AddChildByMove(IGameMove move)
         {
-            if (_children == null)
+            if (Children == null)
             {
-                _children = new List<MCNode>();
+                Children = new List<MCNode>();
             }
             var tmpState = GameState.GetDeepCopy();
             tmpState.ApplyMove(move);
             var child = new MCNode(tmpState);
-            _children.Add(child);
+            Children.Add(child);
             child.Parent = this;
         }
 
@@ -61,12 +61,12 @@ namespace MonteCarloTreeSearchLib.Algorithm
 
         public MCNode FindBestUCTChildNode(float expParam)
         {
-            MCNode best = _children[0];
-            for (int i = 1; i < _children.Count; i++)
+            MCNode best = Children[0];
+            for (int i = 1; i < Children.Count; i++)
             {
-                if (best.UCTValue(expParam, VisitsCount) < _children[i].UCTValue(expParam, VisitsCount))
+                if (best.UCTValue(expParam, VisitsCount) < Children[i].UCTValue(expParam, VisitsCount))
                 {
-                    best = _children[i];
+                    best = Children[i];
                 }
             }
             return best;
@@ -78,22 +78,36 @@ namespace MonteCarloTreeSearchLib.Algorithm
             float winScore = _score;
             if (visits == 0)
             {
-                return 10000000f; // won't 2 be enough?
+                return 100000f; // won't 2 be enough?
             }
             else
             {
-                return (winScore / visits) + explorationParameter * (float)Math.Sqrt(Math.Log(parentVisits) / (float)visits);
+                float val = (winScore / (float)visits) + explorationParameter * (float)Math.Sqrt(Math.Log(parentVisits) / (double)visits);
+                return val;
             }
         }
 
         public MCNode GetChildWithMaxAveragePrize()
         {
-            MCNode best = _children[0];
-            for (int i = 1; i < _children.Count; i++)
+            MCNode best = Children[0];
+            for (int i = 1; i < Children.Count; i++)
             {
-                if (best.AveragePrize < _children[i].AveragePrize)
+                if (best.AveragePrize < Children[i].AveragePrize)
                 {
-                    best = _children[i];
+                    best = Children[i];
+                }
+            }
+            return best;
+        }
+
+        public MCNode GetChildWithMaxVisitsCount()
+        {
+            MCNode best = Children[0];
+            for (int i = 1; i < Children.Count; i++)
+            {
+                if (best.VisitsCount < Children[i].VisitsCount)
+                {
+                    best = Children[i];
                 }
             }
             return best;

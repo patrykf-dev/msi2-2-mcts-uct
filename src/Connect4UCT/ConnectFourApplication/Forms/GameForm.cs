@@ -17,6 +17,10 @@ namespace ConnectFourApplication
             SetStartValues();
             ConnectButtons();
             OnMovePerformed += HandleMovePerformed;
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
         }
 
         public new void Dispose()
@@ -70,7 +74,6 @@ namespace ConnectFourApplication
             if (!(_game.ActualMoving is HumanPlayer) && _game.InProgress)
             {
                 int holeIndex = _game.ActualMoving.GetPlayerDecision(_game.Board);
-                Console.WriteLine($"PC DECISION IS {holeIndex}");
                 MakeMove(holeIndex);
                 OnMovePerformed?.Invoke();
             }

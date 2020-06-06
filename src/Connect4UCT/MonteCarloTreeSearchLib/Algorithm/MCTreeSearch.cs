@@ -17,7 +17,8 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private readonly float DRAW_REWARD = 0.5f;
         private readonly float LOSE_REWARD = 0f;
 
-        public MCTreeSearch(MCNode root, int maxIterations = 3000)
+
+        public MCTreeSearch(MCNode root, int maxIterations = 18000)
         {
             _root = root;
             _iterationCount = 0;
@@ -31,15 +32,23 @@ namespace MonteCarloTreeSearchLib.Algorithm
                 PerformAlgorithmIteration();
                 _iterationCount++;
             }
+            Console.WriteLine($"I made {badCounter} bad moves in {_iterationCount} iterations");
             return ExtractResultMove();
         }
 
+        private int badCounter = 0;
         private void PerformAlgorithmIteration()
         {
             var promisingNode = Selection();
             var expandedValidNode = Expansion(promisingNode);
             if (expandedValidNode == false)
+            {
+                badCounter++;
+                (int leafPlayer, float reward) = Backpropagation(promisingNode, promisingNode.GameState.Phase);
+                //Console.WriteLine($"REWARDED PLAYER {leafPlayer} WITH {reward} FOR: ");
+                //(promisingNode.GameState as ConnectFourGameState).Board.PrintBoard();
                 return;
+            }
 
             MCNode leafToExplore = promisingNode;
             if (promisingNode.HasChildren)
@@ -57,7 +66,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private MCNode Selection()
         {
             var tmpNode = _root;
-            while(tmpNode.HasChildren)
+            while (tmpNode.HasChildren)
             {
                 tmpNode = FindBestChildNode(tmpNode);
             }
@@ -72,9 +81,8 @@ namespace MonteCarloTreeSearchLib.Algorithm
         {
             var possibleMoves = node.GameState.GetAllPossibleMoves();
             var phase = node.GameState.Phase;
-            if(phase != GamePhase.InProgress)
+            if (phase != GamePhase.InProgress)
             {
-                Console.WriteLine("BAD!!!");
                 return false;
             }
             else
@@ -107,7 +115,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// Executes 4th stage of MCTS.
         /// Uses the result of the playout to update information in the nodes on the path from C to R.
         /// </summary>
-        private void Backpropagation(MCNode leaf, GamePhase playoutFinalPhase)
+        private (int, float) Backpropagation(MCNode leaf, GamePhase playoutFinalPhase)
         {
             int leafPlayer = leaf.GameState.CurrentPlayer;
             float reward = CalculateReward(playoutFinalPhase, leafPlayer);
@@ -115,13 +123,20 @@ namespace MonteCarloTreeSearchLib.Algorithm
             while (tmpNode != _root)
             {
                 tmpNode.MarkVisit();
-                if (tmpNode.GameState.CurrentPlayer == leafPlayer)
+
+                if (playoutFinalPhase == GamePhase.Draw)
                 {
                     tmpNode.AddReward(reward);
                 }
+                else if (tmpNode.GameState.CurrentPlayer == leafPlayer)
+                {
+                    tmpNode.AddReward(reward);
+                }
+
                 tmpNode = tmpNode.Parent;
             }
             _root.MarkVisit();
+            return (leafPlayer, reward);
         }
 
         private float CalculateReward(GamePhase playoutFinalPhase, int leafPlayer)
@@ -159,6 +174,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private IGameMove ExtractResultMove()
         {
             MCNode bestChild = _root.GetChildWithMaxAveragePrize();
+            //MCNode bestChild = _root.GetChildWithMaxVisitsCount();
             return _root.GameState.GetGameMoveLeadingTo(bestChild.GameState);
         }
     }

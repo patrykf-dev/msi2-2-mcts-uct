@@ -42,8 +42,17 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             SwitchCurrentPlayer();
 
             Phase = CheckMoveResult(column);
-            //PrintBoard();
             return Phase;
+        }
+
+        public string SerializeHeights()
+        {
+            string rc = "";
+            foreach (var height in _columnHeights)
+            {
+                rc += $"{height}|";
+            }
+            return rc;
         }
 
         public void PrintBoard()

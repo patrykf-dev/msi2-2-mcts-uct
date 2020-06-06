@@ -52,6 +52,7 @@
     <Compile Include="ConnectFour\ConnectFourGameMove.cs" />
     <Compile Include="ConnectFour\ConnectFourGameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\CsvSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

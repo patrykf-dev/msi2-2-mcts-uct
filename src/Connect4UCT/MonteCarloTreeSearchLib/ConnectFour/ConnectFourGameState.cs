@@ -1,9 +1,6 @@
 ﻿using MonteCarloTreeSearchLib.Algorithm;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonteCarloTreeSearchLib.ConnectFour
 {
@@ -21,7 +18,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public ConnectFourGameState(ConnectFourBoard board)
         {
             Board = board;
-            CurrentPlayer = 1;
+            CurrentPlayer = board.CurrentPlayer;
             Phase = board.Phase;
         }
 
@@ -36,8 +33,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public override List<IGameMove> GetAllPossibleMoves()
         {
             var moves = new List<IGameMove>();
-            var freeHoles = Board.GetFreeHoles();
-            foreach (var hole in freeHoles)
+            foreach (var hole in Board.GetFreeHoles())
             {
                 moves.Add(new ConnectFourGameMove(hole));
             }
