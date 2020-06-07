@@ -14,6 +14,7 @@ namespace ConnectFourApplication
         public event Action<GamePhase> OnGameEnded;
         public List<int> Moves = new List<int>();
         private Game _game;
+        private bool _testLaunched = false;
 
         public GameForm()
         {
@@ -22,6 +23,15 @@ namespace ConnectFourApplication
             SetStartValues();
             ConnectButtons();
             OnMovePerformed += HandleMovePerformed;
+        }
+
+        public void PerformTest(ComputerPlayer player1, ComputerPlayer player2,
+            PlayerType player1Strategy, PlayerType player2Strategy)
+        {
+            _testLaunched = true;
+            cbxPlayer1.SelectedIndex = PlayerTypeExtensions.GetPlayerTypeIndex(player1Strategy);
+            cbxPlayer2.SelectedIndex = PlayerTypeExtensions.GetPlayerTypeIndex(player2Strategy);
+            startButton.PerformClick();
         }
 
         public new void Dispose()
@@ -67,7 +77,6 @@ namespace ConnectFourApplication
             var player1 = PlayerTypeExtensions.GetPlayerType(cbxPlayer1.SelectedIndex);
             var player2 = PlayerTypeExtensions.GetPlayerType(cbxPlayer2.SelectedIndex);
             _game = new Game(player1, player2);
-            GameTracker tracker = new GameTracker(this, player1.ToString(), player2.ToString());
             HandleMovePerformed(-1);
         }
         
@@ -112,14 +121,21 @@ namespace ConnectFourApplication
         private void EndGame(GamePhase phase)
         {
             OnGameEnded?.Invoke(phase);
-            string msg;
-            if (phase == GamePhase.Player1Won)
-                msg = _game.Player1.GetName() + " won!";
-            else if (phase == GamePhase.Player2Won)
-                msg = _game.Player2.GetName() + " won!";
+            if(_testLaunched)
+            {
+                Close();
+            }
             else
-                msg = "DRAW";
-            MessageBox.Show(msg);
+            {
+                string msg;
+                if (phase == GamePhase.Player1Won)
+                    msg = _game.Player1.GetName() + " won!";
+                else if (phase == GamePhase.Player2Won)
+                    msg = _game.Player2.GetName() + " won!";
+                else
+                    msg = "DRAW";
+                MessageBox.Show(msg);
+            }
         }
 
         private void Enable(Control control)

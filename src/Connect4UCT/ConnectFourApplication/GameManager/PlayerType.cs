@@ -35,6 +35,27 @@ namespace ConnectFourApplication
                 throw new ArgumentException("Incorrect type passed");
         }
 
+        public static int GetPlayerTypeIndex(PlayerType type)
+        {
+            switch (type)
+            {
+                case PlayerType.HUMAN:
+                    return 0;
+                case PlayerType.GREEDY:
+                    return 1;
+                case PlayerType.UCB1:
+                    return 2;
+                case PlayerType.UCB_M:
+                    return 3;
+                case PlayerType.UCB_V:
+                    return 4;
+                case PlayerType.RANDOM:
+                    return 5;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         public static PlayerType GetPlayerType(int index)
         {
             switch (index)
@@ -52,7 +73,7 @@ namespace ConnectFourApplication
                 case 5:
                     return PlayerType.RANDOM;
                 default:
-                    return PlayerType.HUMAN;
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }
