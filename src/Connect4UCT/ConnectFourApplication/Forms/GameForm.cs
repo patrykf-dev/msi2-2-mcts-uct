@@ -108,7 +108,7 @@ namespace ConnectFourApplication
 
         private void ShowEndWindow()
         {
-            Disable(gamePanel);
+            //Disable(gamePanel);
         }
 
         private void EndGame(GamePhase phase)

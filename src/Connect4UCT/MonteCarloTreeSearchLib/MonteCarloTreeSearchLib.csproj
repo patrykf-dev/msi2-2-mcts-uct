@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithm\GamePhase.cs" />
+    <Compile Include="Algorithm\GreedyDecider.cs" />
     <Compile Include="Algorithm\IGameMove.cs" />
     <Compile Include="Algorithm\GameState.cs" />
     <Compile Include="Algorithm\MCNode.cs" />

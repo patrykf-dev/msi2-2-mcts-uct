@@ -23,7 +23,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
                 case AgentStrategy.UCB_V:
                     return PerformUCTDecision(board, new UCBVDecider(1.68f, 0.54f));
                 case AgentStrategy.GREEDY:
-                    break;
+                    return PerformGreedyDecision(board);
                 case AgentStrategy.RANDOM:
                     return PerformRandomDecision(board);
                 default:
@@ -38,6 +38,12 @@ namespace MonteCarloTreeSearchLib.Algorithm
             var abstractMove = new MCTreeSearch(root, decider).CalculateNextMove();
             var gameMove = abstractMove as ConnectFourGameMove;
             return gameMove.HoleIndex;
+        }
+
+        private int PerformGreedyDecision(ConnectFourBoard board)
+        {
+            var decider = new GreedyDecider();
+            return decider.PerformDecision(board);
         }
 
         private int PerformRandomDecision(ConnectFourBoard board)

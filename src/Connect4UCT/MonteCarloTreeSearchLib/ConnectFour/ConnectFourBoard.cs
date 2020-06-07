@@ -12,10 +12,10 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public GamePhase Phase { get; private set; }
         public int CurrentPlayer { get; private set; }
         public int[,] Board { get; private set; }
+        public int[] ColumnHeights { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        private int[] _columnHeights;
         private int _tokensPlaced;
 
         public int[,] GetBoard() { return Board; }
@@ -26,7 +26,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             Height = height;
             _tokensPlaced = 0;
             Board = new int[height, width];
-            _columnHeights = new int[width];
+            ColumnHeights = new int[width];
             CurrentPlayer = 1;
             Phase = GamePhase.InProgress;
         }
@@ -36,8 +36,8 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             if (column < 0 || column > Width || ColumnFull(column) || Phase != GamePhase.InProgress)
                 throw new ArgumentException($"Invalid move, cannot fill column {column}");
 
-            Board[_columnHeights[column], column] = CurrentPlayer;
-            _columnHeights[column]++;
+            Board[ColumnHeights[column], column] = CurrentPlayer;
+            ColumnHeights[column]++;
             _tokensPlaced++;
             SwitchCurrentPlayer();
 
@@ -48,7 +48,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public string SerializeHeights()
         {
             string rc = "";
-            foreach (var height in _columnHeights)
+            foreach (var height in ColumnHeights)
             {
                 rc += $"{height}|";
             }
@@ -81,7 +81,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
             for (int i = 0; i < Width; i++)
             {
-                board._columnHeights[i] = _columnHeights[i];
+                board.ColumnHeights[i] = ColumnHeights[i];
                 for (int j = 0; j < Height; j++)
                 {
                     board.Board[j, i] = Board[j, i];
@@ -95,7 +95,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         {
             for (int i = 0; i < Width; i++)
             {
-                if (_columnHeights[i] < nextBoard._columnHeights[i])
+                if (ColumnHeights[i] < nextBoard.ColumnHeights[i])
                 {
                     return i;
                 }
@@ -116,6 +116,11 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             return holes;
         }
 
+        public bool ColumnFull(int hole)
+        {
+            return ColumnHeights[hole] == Height;
+        }
+
         private bool BoardFull()
         {
             return _tokensPlaced == Width * Height;
@@ -124,11 +129,6 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         private void SwitchCurrentPlayer()
         {
             CurrentPlayer = PlayerHelpers.GetOpposingPlayer(CurrentPlayer);
-        }
-
-        private bool ColumnFull(int hole)
-        {
-            return _columnHeights[hole] == Height;
         }
 
         private GamePhase CheckMoveResult(int column)
@@ -143,13 +143,13 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             // Horizontal check
             int horCount = 1;
             int horIndex = column + 1;
-            while (horIndex < Width && Board[_columnHeights[column] - 1, horIndex] == playerIndex)
+            while (horIndex < Width && Board[ColumnHeights[column] - 1, horIndex] == playerIndex)
             {
                 horCount++;
                 horIndex++;
             }
             horIndex = column - 1;
-            while (horIndex >= 0 && Board[_columnHeights[column] - 1, horIndex] == playerIndex)
+            while (horIndex >= 0 && Board[ColumnHeights[column] - 1, horIndex] == playerIndex)
             {
                 horCount++;
                 horIndex--;
@@ -162,13 +162,13 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
             // Vertical check
             int verCount = 1;
-            int verIndex = _columnHeights[column];
+            int verIndex = ColumnHeights[column];
             while (verIndex < Height && Board[verIndex, column] == playerIndex)
             {
                 verCount++;
                 verIndex++;
             }
-            verIndex = _columnHeights[column] - 2;
+            verIndex = ColumnHeights[column] - 2;
             while (verIndex >= 0 && Board[verIndex, column] == playerIndex)
             {
                 verCount++;
@@ -183,7 +183,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             // Ascending diagonal check
             int ascDiagCount = 1;
             int ascDiagColIndex = column + 1;
-            int ascDiagRowIndex = _columnHeights[column];
+            int ascDiagRowIndex = ColumnHeights[column];
             while (ascDiagRowIndex < Height &&
                 ascDiagColIndex < Width &&
                 Board[ascDiagRowIndex, ascDiagColIndex] == playerIndex)
@@ -193,7 +193,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
                 ascDiagRowIndex++;
             }
             ascDiagColIndex = column - 1;
-            ascDiagRowIndex = _columnHeights[column] - 2;
+            ascDiagRowIndex = ColumnHeights[column] - 2;
             while (ascDiagRowIndex >= 0 &&
                 ascDiagColIndex >= 0 &&
                  Board[ascDiagRowIndex, ascDiagColIndex] == playerIndex)
@@ -212,7 +212,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             // Descending diagonal check
             int descDiagCount = 1;
             int descDiagColIndex = column + 1; // ++
-            int descDiagRowIndex = _columnHeights[column] - 2; // --
+            int descDiagRowIndex = ColumnHeights[column] - 2; // --
             while (descDiagColIndex < Width &&
                 descDiagRowIndex >= 0 &&
                 Board[descDiagRowIndex, descDiagColIndex] == playerIndex)
@@ -223,7 +223,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             }
 
             descDiagColIndex = column - 1; // --
-            descDiagRowIndex = _columnHeights[column]; // ++
+            descDiagRowIndex = ColumnHeights[column]; // ++
             while (descDiagColIndex >= 0 &&
                  descDiagRowIndex < Height &&
                   Board[descDiagRowIndex, descDiagColIndex] == playerIndex)
