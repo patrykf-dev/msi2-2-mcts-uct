@@ -2,13 +2,15 @@
 
 namespace MonteCarloTreeSearchLib.Algorithm
 {
-    public class UCB1Decider : UCBBaseDecider
+    public class UCBMDecider : UCBBaseDecider
     {
-        private float _explorationParam;
+        private float _c1;
+        private float _c2;
 
-        public UCB1Decider(float explorationParam)
+        public UCBMDecider(float c1, float c2)
         {
-            _explorationParam = explorationParam;
+            _c1 = c1;
+            _c2 = c2;
         }
 
         public MCNode FindBestUCTChildNode(MCNode node, int currentMoving)
@@ -16,7 +18,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
             MCNode best = node.Children[0];
             for (int i = 1; i < node.Children.Count; i++)
             {
-                if (UCTValue(best, node.VisitsCount, currentMoving) < UCTValue(node.Children[i], node.VisitsCount, currentMoving))
+                if (UCBMValue(best, node.VisitsCount, currentMoving) < UCBMValue(node.Children[i], node.VisitsCount, currentMoving))
                 {
                     best = node.Children[i];
                 }
@@ -24,7 +26,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
             return best;
         }
 
-        private float UCTValue(MCNode node, int parentVisits, int currentMoving)
+        private float UCBMValue(MCNode node, int parentVisits, int currentMoving)
         {
             int visits = node.VisitsCount;
             if (visits == 0)
@@ -34,7 +36,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
             else
             {
                 float prize = (node.GameState.GetCurrentPlayer() == currentMoving) ? node.AveragePrize : -node.AveragePrize;
-                float val = prize + _explorationParam * (float)Math.Sqrt(Math.Log(parentVisits) / (double)visits);
+                float val = prize + (_c1 / (float)Math.Pow((float)visits, _c2));
                 return val;
             }
         }

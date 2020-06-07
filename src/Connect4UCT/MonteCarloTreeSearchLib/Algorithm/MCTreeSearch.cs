@@ -8,17 +8,19 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private int _iterationCount;
         private int _maxIterations;
         private int _playerTurn;
+        private UCBBaseDecider _decider;
 
         private readonly float WIN_REWARD = 1f;
         private readonly float DRAW_REWARD = 0.5f;
         private readonly float LOSE_REWARD = 0f;
 
 
-        public MCTreeSearch(MCNode root, int maxIterations = 18000)
+        public MCTreeSearch(MCNode root, UCBBaseDecider decider, int maxIterations = 18000)
         {
             _root = root;
-            _iterationCount = 0;
+            _decider = decider;
             _maxIterations = maxIterations;
+            _iterationCount = 0;
             _playerTurn = root.GameState.GetCurrentPlayer();
         }
 
@@ -60,7 +62,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
             var tmpNode = _root;
             while (tmpNode.HasChildren)
             {
-                tmpNode = FindBestChildNode(tmpNode);
+                tmpNode = _decider.FindBestUCTChildNode(tmpNode, _playerTurn);
             }
             return tmpNode;
         }
@@ -71,7 +73,6 @@ namespace MonteCarloTreeSearchLib.Algorithm
         /// </summary>
         private bool Expansion(MCNode node)
         {
-            var possibleMoves = node.GameState.GetAllPossibleMoves();
             var phase = node.GameState.Phase;
             if (phase != GamePhase.InProgress)
             {
@@ -79,6 +80,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
             }
             else
             {
+                var possibleMoves = node.GameState.GetAllPossibleMoves();
                 foreach (var move in possibleMoves)
                 {
                     node.AddChildByMove(move);
@@ -140,16 +142,6 @@ namespace MonteCarloTreeSearchLib.Algorithm
                 return DRAW_REWARD;
             else
                 throw new ArgumentException("Illegal state");
-        }
-
-        /// <summary>
-        /// Calculates UCT value for children of a given node, with the formula:
-        /// uct_value = (win_score / visits) + 1.41 * sqrt(log(parent_visit) / visits)
-        /// and returns the most profitable one.
-        /// </summary>
-        private MCNode FindBestChildNode(MCNode node)
-        {
-            return node.FindBestUCTChildNode(1.41f, _playerTurn);
         }
 
         private IGameMove ExtractResultMove()

@@ -25,7 +25,7 @@ namespace ConnectFourApplication
                 return AgentStrategy.UCB1;
             else if (type == PlayerType.UCB_M)
                 return AgentStrategy.UCB_M;
-            else if (type == PlayerType.UCB_M)
+            else if (type == PlayerType.UCB_V)
                 return AgentStrategy.UCB_V;
             else if (type == PlayerType.GREEDY)
                 return AgentStrategy.GREEDY;

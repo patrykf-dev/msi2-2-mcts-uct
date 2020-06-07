@@ -50,7 +50,10 @@
     <Compile Include="Algorithm\RandomUtils.cs" />
     <Compile Include="Algorithm\AgentDecider.cs" />
     <Compile Include="Algorithm\UCB1Decider.cs" />
-    <Compile Include="Algorithm\UCTBaseDecider.cs" />
+    <Compile Include="Algorithm\UCBMDecider.cs" />
+    <Compile Include="Algorithm\UCBVDecider.cs" />
+    <Compile Include="Algorithm\UCBBaseDecider.cs" />
+    <Compile Include="Algorithm\VarianceCalculator.cs" />
     <Compile Include="ConnectFour\ConnectFourBoard.cs" />
     <Compile Include="ConnectFour\ConnectFourGameMove.cs" />
     <Compile Include="ConnectFour\ConnectFourGameState.cs" />

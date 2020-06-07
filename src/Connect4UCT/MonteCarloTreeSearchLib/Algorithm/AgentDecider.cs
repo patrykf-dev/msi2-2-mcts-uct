@@ -1,10 +1,5 @@
 ﻿using MonteCarloTreeSearchLib.ConnectFour;
-using MonteCarloTreeSearchLib.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonteCarloTreeSearchLib.Algorithm
 {
@@ -19,8 +14,47 @@ namespace MonteCarloTreeSearchLib.Algorithm
 
         public int PerformDecision(ConnectFourBoard board)
         {
-            var search = new MCTreeSearch(new MCNode(new ConnectFourGameState(board)));
-            var abstractMove = search.CalculateNextMove();
+            switch (_strategy)
+            {
+                case AgentStrategy.UCB1:
+                    return PerformUCB1Decision(board);
+                case AgentStrategy.UCB_M:
+                    return PerformUCBMDecision(board);
+                case AgentStrategy.UCB_V:
+                    return PerformUCBVDecision(board);
+                case AgentStrategy.GREEDY:
+                    break;
+                case AgentStrategy.RANDOM:
+                    break;
+                default:
+                    break;
+            }
+            return 0;
+        }
+
+        private int PerformUCB1Decision(ConnectFourBoard board)
+        {
+            var root = new MCNode(new ConnectFourGameState(board));
+            var decider = new UCB1Decider(1.41f);
+            var abstractMove = new MCTreeSearch(root, decider).CalculateNextMove();
+            var gameMove = abstractMove as ConnectFourGameMove;
+            return gameMove.HoleIndex;
+        }
+
+        private int PerformUCBMDecision(ConnectFourBoard board)
+        {
+            var root = new MCNode(new ConnectFourGameState(board));
+            var decider = new UCBMDecider(8.4f, 1.8f);
+            var abstractMove = new MCTreeSearch(root, decider).CalculateNextMove();
+            var gameMove = abstractMove as ConnectFourGameMove;
+            return gameMove.HoleIndex;
+        }
+
+        private int PerformUCBVDecision(ConnectFourBoard board)
+        {
+            var root = new MCNode(new ConnectFourGameState(board));
+            var decider = new UCBVDecider(1.68f, 0.54f);
+            var abstractMove = new MCTreeSearch(root, decider).CalculateNextMove();
             var gameMove = abstractMove as ConnectFourGameMove;
             return gameMove.HoleIndex;
         }
