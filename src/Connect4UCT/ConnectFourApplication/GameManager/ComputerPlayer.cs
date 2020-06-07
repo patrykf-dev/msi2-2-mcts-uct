@@ -7,27 +7,16 @@ namespace ConnectFourApplication
 {
     public class ComputerPlayer : IPlayer
     {
+        public AgentDecider Decider { get; set; }
+        public Color Color { get; set; }
         private string _name;
         private PlayerType _type;
-        private AgentDecider _decider;
-        public Color Color { get; set; }
-
-        public ComputerPlayer(string name, PlayerType type, UCB1Decider ucb1Decider, UCBMDecider ucbmDecider, UCBVDecider ucbvDecider)
-        {
-            _name = name;
-            _type = type;
-            _decider = new AgentDecider(
-                _type.GetAgentStrategy(),
-                ucb1Decider,
-                ucbmDecider,
-                ucbvDecider);
-        }
 
         public ComputerPlayer(string name, PlayerType type)
         {
             _name = name;
             _type = type;
-            _decider = new AgentDecider(
+            Decider = new AgentDecider(
                 _type.GetAgentStrategy(),
                 GetDefaultUCB1Decider(),
                 GetDefaultUCBMDecider(),
@@ -45,7 +34,7 @@ namespace ConnectFourApplication
 
         public int GetPlayerDecision(ConnectFourBoard board)
         {
-            return _decider.PerformDecision(board);
+            return Decider.PerformDecision(board);
         }
 
         private UCB1Decider GetDefaultUCB1Decider()

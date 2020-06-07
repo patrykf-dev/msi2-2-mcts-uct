@@ -15,7 +15,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private readonly float LOSE_REWARD = 0f;
 
 
-        public MCTreeSearch(MCNode root, UCBBaseDecider decider, int maxIterations = 18000)
+        public MCTreeSearch(MCNode root, UCBBaseDecider decider, int maxIterations = 15000)
         {
             _root = root;
             _decider = decider;

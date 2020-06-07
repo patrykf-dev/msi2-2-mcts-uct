@@ -13,14 +13,15 @@ namespace ConnectFourApplication.GameManager
 
         private string _firstPlayer;
         private string _secondPlayer;
+        private string _fileName;
         private GameForm _form;
-        
 
-        public GameTracker(GameForm form, string firstPlayer, string secondPlayer)
+        public GameTracker(GameForm form, string firstPlayer, string secondPlayer, string fileName)
         {
             _firstPlayer = firstPlayer;
             _secondPlayer = secondPlayer;
             _form = form;
+            _fileName = fileName;
             _form.OnGameEnded += HandleGameEnded;
         }
 
@@ -37,7 +38,7 @@ namespace ConnectFourApplication.GameManager
             string log = 
                 $"{rngSeed}, {_firstPlayer}, {_secondPlayer}, " +
                 $"{result}, {GetMovesString()}, {GetRewardValue(result, _form.Moves.Count)}";
-            File.AppendAllText(@"game_logs.csv", log + Environment.NewLine);
+            File.AppendAllText(_fileName, log + Environment.NewLine);
         }
 
         private double GetRewardValue(int result, int movesCount)

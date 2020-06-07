@@ -5,17 +5,17 @@ namespace MonteCarloTreeSearchLib.Algorithm
 {
     public class AgentDecider
     {
+        public UCB1Decider ucb1Decider { get; set; }
+        public UCBMDecider ucbmDecider { get; set; }
+        public UCBVDecider ucbvDecider { get; set; }
         private AgentStrategy _strategy;
-        private UCB1Decider _ucb1Decider;
-        private UCBMDecider _ucbmDecider;
-        private UCBVDecider _ucbvDecider;
 
         public AgentDecider(AgentStrategy strategy, UCB1Decider ucb1Decider, UCBMDecider ucbmDecider, UCBVDecider ucbvDecider)
         {
             _strategy = strategy;
-            _ucb1Decider = ucb1Decider;
-            _ucbmDecider = ucbmDecider;
-            _ucbvDecider = ucbvDecider;
+            this.ucb1Decider = ucb1Decider;
+            this.ucbmDecider = ucbmDecider;
+            this.ucbvDecider = ucbvDecider;
         }
 
         public int PerformDecision(ConnectFourBoard board)
@@ -23,11 +23,11 @@ namespace MonteCarloTreeSearchLib.Algorithm
             switch (_strategy)
             {
                 case AgentStrategy.UCB1:
-                    return PerformUCTDecision(board, _ucb1Decider);
+                    return PerformUCTDecision(board, ucb1Decider);
                 case AgentStrategy.UCB_M:
-                    return PerformUCTDecision(board, _ucbmDecider);
+                    return PerformUCTDecision(board, ucbmDecider);
                 case AgentStrategy.UCB_V:
-                    return PerformUCTDecision(board, _ucbvDecider);
+                    return PerformUCTDecision(board, ucbvDecider);
                 case AgentStrategy.GREEDY:
                     return PerformGreedyDecision(board);
                 case AgentStrategy.RANDOM:

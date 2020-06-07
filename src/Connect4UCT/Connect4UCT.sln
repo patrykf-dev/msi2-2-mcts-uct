@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonteCarloTreeSearchLib", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectFourApplication", "ConnectFourApplication\ConnectFourApplication.csproj", "{FD2BFD6D-DEE3-40E6-AC2B-4B9D5D5484AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectFourUCTTester", "ConnectFourUCTTester\ConnectFourUCTTester.csproj", "{DCF79042-DB6C-4A2D-A656-9B62C92A0B93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FD2BFD6D-DEE3-40E6-AC2B-4B9D5D5484AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD2BFD6D-DEE3-40E6-AC2B-4B9D5D5484AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD2BFD6D-DEE3-40E6-AC2B-4B9D5D5484AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF79042-DB6C-4A2D-A656-9B62C92A0B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF79042-DB6C-4A2D-A656-9B62C92A0B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF79042-DB6C-4A2D-A656-9B62C92A0B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF79042-DB6C-4A2D-A656-9B62C92A0B93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
