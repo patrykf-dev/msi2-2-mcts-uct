@@ -15,14 +15,22 @@ namespace ConnectFourApplication
 
     public static class PlayerTypeExtensions
     {
-        public static UCTVariant GetUCTVariant(this PlayerType type)
+        /// <summary>
+        /// This function needs to cast enum representing nearly same values 
+        /// between two projects in order to avoid circular dependency
+        /// </summary>
+        public static AgentStrategy GetAgentStrategy(this PlayerType type)
         {
             if (type == PlayerType.UCB1)
-                return UCTVariant.UCB1;
+                return AgentStrategy.UCB1;
             else if (type == PlayerType.UCB_M)
-                return UCTVariant.UCB_M;
+                return AgentStrategy.UCB_M;
             else if (type == PlayerType.UCB_M)
-                return UCTVariant.UCB_V;
+                return AgentStrategy.UCB_V;
+            else if (type == PlayerType.GREEDY)
+                return AgentStrategy.GREEDY;
+            else if (type == PlayerType.RANDOM)
+                return AgentStrategy.RANDOM;
             else
                 throw new ArgumentException("Incorrect type passed");
         }

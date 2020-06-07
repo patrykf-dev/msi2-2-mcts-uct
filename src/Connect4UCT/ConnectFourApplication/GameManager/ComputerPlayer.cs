@@ -27,7 +27,7 @@ namespace ConnectFourApplication
 
         public int GetPlayerDecision(ConnectFourBoard board)
         {
-            UCTDecider decider = new UCTDecider(_type.GetUCTVariant());
+            AgentDecider decider = new AgentDecider(_type.GetAgentStrategy());
             return decider.PerformDecision(board);
         }
     }

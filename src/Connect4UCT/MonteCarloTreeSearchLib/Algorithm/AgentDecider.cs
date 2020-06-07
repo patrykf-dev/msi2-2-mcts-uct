@@ -8,31 +8,30 @@ using System.Threading.Tasks;
 
 namespace MonteCarloTreeSearchLib.Algorithm
 {
-    public class UCTDecider
+    public class AgentDecider
     {
-        private UCTVariant _variant;
+        private AgentStrategy _strategy;
 
-        public UCTDecider(UCTVariant variant)
+        public AgentDecider(AgentStrategy strategy)
         {
-            _variant = variant;
+            _strategy = strategy;
         }
 
         public int PerformDecision(ConnectFourBoard board)
         {
-            var state = new ConnectFourGameState(board);
-            var root = new MCNode(state);
-            var search = new MCTreeSearch(root);
+            var search = new MCTreeSearch(new MCNode(new ConnectFourGameState(board)));
             var abstractMove = search.CalculateNextMove();
             var gameMove = abstractMove as ConnectFourGameMove;
-            //CsvSerializer.SaveTree(root, $"tree_newest.csv");
             return gameMove.HoleIndex;
         }
     }
 
-    public enum UCTVariant
+    public enum AgentStrategy
     {
         UCB1,
         UCB_M,
         UCB_V,
+        GREEDY,
+        RANDOM
     }
 }
