@@ -54,6 +54,7 @@
       <DependentUpon>GameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GameManager\Game.cs" />
+    <Compile Include="GameManager\GameTracker.cs" />
     <Compile Include="GameManager\HumanPlayer.cs" />
     <Compile Include="GameManager\IPlayer.cs" />
     <Compile Include="GameManager\PlayerType.cs" />

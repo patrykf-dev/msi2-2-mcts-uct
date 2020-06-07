@@ -203,7 +203,6 @@ namespace MonteCarloTreeSearchLib.ConnectFour
                 ascDiagRowIndex--;
             }
 
-            //Console.WriteLine($"asc diag count for player {playerIndex} is {ascDiagCount}");
             if (ascDiagCount >= 4)
             {
                 return PlayerHelpers.GetPhaseOnPlayerWin(playerIndex);
@@ -233,7 +232,6 @@ namespace MonteCarloTreeSearchLib.ConnectFour
                 descDiagRowIndex++;
             }
 
-            //Console.WriteLine($"desc diag count for player {playerIndex} is {descDiagCount}");
             if (descDiagCount >= 4)
             {
                 return PlayerHelpers.GetPhaseOnPlayerWin(playerIndex);

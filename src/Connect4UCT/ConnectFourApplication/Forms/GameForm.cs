@@ -1,26 +1,27 @@
-﻿using MonteCarloTreeSearchLib.Algorithm;
+﻿using ConnectFourApplication.GameManager;
+using MonteCarloTreeSearchLib.Algorithm;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace ConnectFourApplication
 {
-    public partial class Form1 : Form
+    public partial class GameForm : Form
     {
         public const int BALL_SIZE = 90;
+        public event Action<int> OnMovePerformed;
+        public event Action<GamePhase> OnGameEnded;
+        public List<int> Moves = new List<int>();
         private Game _game;
-        private event Action OnMovePerformed;
 
-        public Form1()
+        public GameForm()
         {
             InitializeComponent();
+            SetupLocalization();
             SetStartValues();
             ConnectButtons();
             OnMovePerformed += HandleMovePerformed;
-            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
         }
 
         public new void Dispose()
@@ -66,16 +67,18 @@ namespace ConnectFourApplication
             var player1 = PlayerTypeExtensions.GetPlayerType(cbxPlayer1.SelectedIndex);
             var player2 = PlayerTypeExtensions.GetPlayerType(cbxPlayer2.SelectedIndex);
             _game = new Game(player1, player2);
-            HandleMovePerformed();
+            GameTracker tracker = new GameTracker(this, player1.ToString(), player2.ToString());
+            HandleMovePerformed(-1);
         }
         
-        private void HandleMovePerformed()
+        private void HandleMovePerformed(int move)
         {
+            Moves.Add(move);
             if (!(_game.ActualMoving is HumanPlayer) && _game.InProgress)
             {
                 int holeIndex = _game.ActualMoving.GetPlayerDecision(_game.Board);
                 MakeMove(holeIndex);
-                OnMovePerformed?.Invoke();
+                OnMovePerformed?.Invoke(holeIndex);
             }
         }
 
@@ -97,23 +100,18 @@ namespace ConnectFourApplication
         {
             var result = _game.MakeMove(column);
             _game.InProgress = (result == GamePhase.InProgress);
+            gamePanel.Refresh();
+            nextMoveBall.Refresh();
+            OnMovePerformed?.Invoke(column);
             if (result != GamePhase.InProgress)
             {
                 EndGame(result);
             }
-            gamePanel.Refresh();
-            nextMoveBall.Refresh();
-            OnMovePerformed?.Invoke();
-        }
-
-        private void ShowEndWindow()
-        {
-            //Disable(gamePanel);
         }
 
         private void EndGame(GamePhase phase)
         {
-            ShowEndWindow();
+            OnGameEnded?.Invoke(phase);
             string msg;
             if (phase == GamePhase.Player1Won)
                 msg = _game.Player1.GetName() + " won!";
@@ -192,6 +190,13 @@ namespace ConnectFourApplication
                 cp.ExStyle |= 0x02000000;    // Turn on WS_EX_COMPOSITED
                 return cp;
             }
+        }
+
+        private static void SetupLocalization()
+        {
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
         }
     }
 }
