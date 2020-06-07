@@ -25,12 +25,10 @@ namespace ConnectFourApplication
             OnMovePerformed += HandleMovePerformed;
         }
 
-        public void PerformTest(ComputerPlayer player1, ComputerPlayer player2,
-            PlayerType player1Strategy, PlayerType player2Strategy)
+        public void PerformTest(ComputerPlayer player1, ComputerPlayer player2)
         {
             _testLaunched = true;
-            cbxPlayer1.SelectedIndex = PlayerTypeExtensions.GetPlayerTypeIndex(player1Strategy);
-            cbxPlayer2.SelectedIndex = PlayerTypeExtensions.GetPlayerTypeIndex(player2Strategy);
+            _game = new Game(player1, player2);
             startButton.PerformClick();
         }
 
@@ -74,12 +72,15 @@ namespace ConnectFourApplication
         {
             Disable(StartPanel);
             Enable(gamePanel);
-            var player1 = PlayerTypeExtensions.GetPlayerType(cbxPlayer1.SelectedIndex);
-            var player2 = PlayerTypeExtensions.GetPlayerType(cbxPlayer2.SelectedIndex);
-            _game = new Game(player1, player2);
+            if (_testLaunched == false)
+            {
+                var player1 = PlayerTypeExtensions.GetPlayerType(cbxPlayer1.SelectedIndex);
+                var player2 = PlayerTypeExtensions.GetPlayerType(cbxPlayer2.SelectedIndex);
+                _game = new Game(player1, player2);
+            }
             HandleMovePerformed(-1);
         }
-        
+
         private void HandleMovePerformed(int move)
         {
             Moves.Add(move);
@@ -121,7 +122,7 @@ namespace ConnectFourApplication
         private void EndGame(GamePhase phase)
         {
             OnGameEnded?.Invoke(phase);
-            if(_testLaunched)
+            if (_testLaunched)
             {
                 Close();
             }

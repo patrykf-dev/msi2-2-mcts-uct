@@ -6,12 +6,24 @@ namespace ConnectFourApplication
 {
     public class Game
     {
-        public IPlayer Player1 { get; private set; }
-        public IPlayer Player2 { get; private set; }
+        public IPlayer Player1 { get; set; }
+        public IPlayer Player2 { get; set; }
         public IPlayer ActualMoving { get; private set; }
         public IPlayer ActualNotMoving { get; private set; }
         public ConnectFourBoard Board { get; private set; }
         public bool InProgress { get; set; }
+
+        public Game(IPlayer player1, IPlayer player2)
+        {
+            Player1 = player1;
+            Player2 = player2;
+            ActualMoving = Player1;
+            ActualNotMoving = Player2;
+            Board = new ConnectFourBoard();
+            Player1.Color = Color.Yellow;
+            Player2.Color = Color.Red;
+            InProgress = true;
+        }
 
         public Game(PlayerType player1, PlayerType player2)
         {
