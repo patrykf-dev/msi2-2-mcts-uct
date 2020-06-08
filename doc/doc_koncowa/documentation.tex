@@ -125,7 +125,7 @@ Każdy z przeprowadzonych testów będzie w formie pełnej rozgrywki \textit{Con
 
 \section{Weryfikacja hipotez}
 \subsection{Optymalne parametry}
-W celu wyznaczenia najlepszych parametrów dla każdego z trzech analizowanych wariantów UCT, przeprowadzono rozgrywki z algorytmem heurystycznym. Dla każdego wariantu sprawdzono 20 próbnych konfiguracji parametrów, a każdą z konfiguracji sprawdzono dla 15 wartości ziarna generatora liczb losowych, by zmniejszyć wpływ losowości na działanie algorytmu. Jako ocenę każdej konfiguracji przyjęto średnią arytmetyczną wartości funkcji $REWARD$ otrzymanych po zakończonych rozgrywkach. Wyniki testów ukazane są w tabelach \ref{tab:ucb1_param}, \ref{tab:ucbv_param} i \ref{tab:ucbm_param}.
+W celu wyznaczenia najlepszych parametrów dla każdego z trzech analizowanych wariantów UCT, przeprowadzono rozgrywki z algorytmem heurystycznym. Dla każdego wariantu sprawdzono 20 próbnych konfiguracji parametrów, a każdą z konfiguracji sprawdzono dla 15 wartości ziarna generatora liczb losowych, by zmniejszyć wpływ losowości na działanie algorytmu. W każdym teście algorytm MCTS wykonywał 15.000 iteracji. Jako ocenę każdej konfiguracji przyjęto średnią arytmetyczną wartości funkcji $REWARD$ otrzymanych po zakończonych rozgrywkach. Wyniki testów ukazane są w tabelach \ref{tab:ucb1_param} - \ref{tab:ucbm_param}.
 
 \begin{table}[!h]
 	\centering
@@ -190,17 +190,9 @@ Analizując tabelę \ref{tab:ucbv_param}, wnioskuje się, że algorytm działa n
 	\label{tab:ucbm_param}
 \end{table}
 
-Algorytm UCB-Minimal wypadł najgorzej w porównaniu -- nawet najlepiej dobrane wartości parametrów $C_1$ i $C_2$ skutkowały ujemnym bilansem zwycięstw. Zgodnie z tabelą \ref{tab:ucbm_param}, algorytm gra najlepiej w konfiguracji $(C_1 = 11, C_2 = 1)$. Z kolei referencyjne wartości parametrów, zaczerpnięte odpowiednio z \cite{ucbminimal} i \cite{tron}, wiążą się z niższą oceną algorytmu.
+Algorytm UCB-Minimal wypadł najgorzej w porównaniu -- nawet najlepiej dobrane wartości parametrów $C_1$ i $C_2$ skutkowały ujemnym bilansem zwycięstw. Zgodnie z tabelą~\ref{tab:ucbm_param}, algorytm gra najlepiej w konfiguracji $(C_1 = 11, C_2 = 1)$. Z kolei referencyjne wartości parametrów, zaczerpnięte odpowiednio z \cite{ucbminimal} i \cite{tron}, wiążą się z niższą oceną algorytmu.
 
 \clearpage
-
-Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oceniony w rozgrywkach z algorytmem heurystycznym. W celu porównania skuteczności każdego z algorytmów, wyznaczono również średnie arytmetyczne wartości funkcji $REWARD$ po wszystkich rozgrywkach. Uzyskano odpowiednio oceny:
-
-\begin{itemize}
-	\item UCB-V -- 0.306,
-	\item UCB1 -- 0.112,
-	\item UCB-Minimal -- -0.472.
-\end{itemize}
 
 \begin{table}[!h]
 	\centering
@@ -220,6 +212,46 @@ Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oce
 	\caption{Ocena najlepszych konfiguracji algorytmów}
 	\label{tab:all_params}
 \end{table}
+
+Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oceniony w rozgrywkach z algorytmem heurystycznym. W celu porównania skuteczności każdego z algorytmów, wyznaczono również średnie arytmetyczne wartości funkcji $REWARD$ po wszystkich rozgrywkach. Uzyskano odpowiednio oceny:
+
+\begin{itemize}
+	\item UCB-V -- 0.306,
+	\item UCB1 -- 0.112,
+	\item UCB-Minimal -- -0.472.
+\end{itemize}
+
+\clearpage
+
+\subsection{Wpływ iteracji}
+W celu sprawdzenia, jak liczba iteracji MCTS wpływa na poprawę decyzji algorytmu, przeprowadzono testy dla najbardziej optymalnych konfiguracji parametrów każdego wariantu: UCB1, UCB-V i UCB-Minimal. Oceniono rozgrywki z algorytmem heurystycznym po wykonaniu 100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000, 17500 i 20000 iteracji.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{iterations}
+	\caption{Wpływ liczby iteracji na jakość podejmowanych decyzji}
+	\label{rys:iterations}
+\end{figure}
+
+Wyniki analiz zostały zaprezentowane na wykresie na rysunku \ref{rys:iterations}. Ocena każdego z algorytmów osiąga stosunkowo wysokie wartości przy liczbie iteracji 2500, następnie maleje, by przy liczbie iteracji 15000 osiągnąć najwyższą wartość. Wartym zauważenia jest również fakt, że algorytm UCB-V osiąga relatywnie najlepsze wyniki przy najniższych zakresach iteracji.
+
+\clearpage
+
+\subsection{Najlepszy wariant}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|} \hline
+		& UCBV $(1.4, 0.5)$ & UCB1 $(2)$ & UCB1 $(1.41)$ & UCBV $(2, 0.5)$ \\ \hline
+		UCBV $(2, 0.5)$ & 0 & 0 & 0 & \cellcolor{lightgray} \\ \hline
+		UCB1 $(1.41)$ & 0 & 0 & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
+		UCB1 $(2)$ & 0 & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray}  \\ \hline
+		UCBV $(1.4, 0.5)$ & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
+	\end{tabular}
+	\caption{Ocena najlepszych konfiguracji algorytmów}
+	\label{tab:best_variant}
+\end{table}
+
+Najlepszy z wariantów zostanie wyłoniony na podstawie rozegrania partii każdy z każdym.
 
 \begin{thebibliography}{20}
 	\bibitem[1]{connect4knowledge} Victor Allis, \emph{A Knowledge-based Approach of Connect-Four}, Department of Mathematics and Computer Science Vrije Universiteit Amsterdam, The Netherlands. %https://bit.ly/2SPdKQt
