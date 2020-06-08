@@ -83,6 +83,17 @@
 % Nazwa gry
 \newcommand{\nazwagry}{\textit{Connect4}}
 
+%twopartdef
+\newcommand{\twopartdef}[3]
+{
+	\left\{
+	\begin{array}{ll}
+		#1 & \mbox{jeśli agent wygrał} #2 \\
+		#3 & \mbox{w p.p. } 
+	\end{array}
+	\right.
+}
+
 % DOCUMENT
 \title{
 	Zastosowanie algorytmu UCT do stworzenia sztucznej inteligencji grającej w \nazwagry\\
@@ -101,34 +112,43 @@
 \end{titlingpage}
 
 \section{Opis problemu}
-\section{Hipotezy badawcze}
-\section{Wyniki eksperymentów}
 
-Średnie
-\begin{itemize}
-	\item UCB-V - 0.306
-	\item UCB1 - 0.112
-	\item UCB-Minimal - -0.472
-\end{itemize}
+
+\section{Sposób przeprowadzenia testów}
+Każdy z przeprowadzonych testów będzie w formie pełnej rozgrywki \textit{Connect4} pomiędzy dwoma agentami. W celu oszacowania, jak dobre decyzje podejmował agent rozpoczynający rozgrywkę, zdefiniowano funkcję $REWARD$ opisaną równaniem (\ref{eq:reward}). Funkcja jest zależna od liczby ruchów $m$ w danej partii i przyjmuje wartości z zakresu $[-1; 0.8]$. Funkcja nie może przyjąć wartości większych od $0.8$ ze względu na przewagę pierwszego gracza spowodowaną faktem, że rozpoczyna on rozgrywkę.
+
+\begin{equation} \label{eq:reward}
+	REWARD(m) = \twopartdef { 0.8 \cdot (1 - \frac{m-7}{35}) } {} {\frac{m-7}{35} - 1}
+\end{equation}
+
+
+
+\section{Weryfikacja hipotez}
+\subsection{Optymalne parametry}
+W celu wyznaczenia najlepszych parametrów dla każdego z trzech analizowanych wariantów UCT, przeprowadzono rozgrywki z algorytmem heurystycznym. Dla każdego wariantu sprawdzono 20 próbnych konfiguracji parametrów, a każdą z konfiguracji sprawdzono dla 15 wartości ziarna generatora liczb losowych, by zmniejszyć wpływ losowości na działanie algorytmu. Jako ocenę każdej konfiguracji przyjęto średnią arytmetyczną wartości funkcji $REWARD$ otrzymanych po zakończonych rozgrywkach. Wyniki testów ukazane są w tabelach \ref{tab:ucb1_param}, \ref{tab:ucbv_param} i \ref{tab:ucbm_param}.
 
 \begin{table}[!h]
-\centering
-\begin{tabular}{|c|c|} \hline
-	Wartość $c$ & Ocena \\ \hline
-	2 &	0.552 \\ \hline
-	1.41 &	0.529 \\ \hline
-	1.7 &	0.484 \\ \hline
-	1.6 &	0.425 \\ \hline
-	1.5 &	0.415 \\ \hline
-	1.45 &	0.401 \\ \hline
-	1 &	0.153 \\ \hline
-	0.09 &	-0.448 \\ \hline
-	0.01 &	-0.563 \\ \hline
-	0 & -0.702 \\ \hline
-\end{tabular}
-\caption{Ocena algorytmu UCB1 w zależności od parametru eksploracji}
-\label{tab:ucb1_param}
+	\centering
+	\begin{tabular}{|c|c|} \hline
+		Wartość $c$ & Ocena \\ \hline
+		2 &	0.552 \\ \hline
+		\rowcolor{teal} 1.41 &	0.529 \\ \hline
+		1.7 &	0.484 \\ \hline
+		1.6 &	0.425 \\ \hline
+		1.5 &	0.415 \\ \hline
+		1.45 &	0.401 \\ \hline
+		1 &	0.153 \\ \hline
+		0.09 &	-0.448 \\ \hline
+		0.01 &	-0.563 \\ \hline
+		0 & -0.702 \\ \hline
+	\end{tabular}
+	\caption{Ocena algorytmu UCB1 w zależności od parametru eksploracji}
+	\label{tab:ucb1_param}
 \end{table}
+
+Jak widać w tabeli \ref{tab:ucb1_param}, algorytm UCB1 został najlepiej oceniony dla wartości parametru eksploracji $c=2$. Wraz ze zwiększaniem i zmniejszaniem wartości parametru, algorytm był oceniany gorzej. Ponadto, w przypadku $c=0$, kiedy algorytm eksploatował jedynie najbardziej obiecujące ruchy, podejmował najgorsze decyzje. Wartość sugerowana przez autorów algorytmu w \cite{banditbased} ($c=1.41$) została oceniona nieznacznie gorzej względem $c=2$.
+
+\clearpage
 
 \begin{table}[!h]
 	\centering
@@ -136,11 +156,11 @@
 		Wartość $c$ & Wartość $\zeta$ & Ocena \\ \hline
 		1.4 & 0.5 & 	0.560 \\ \hline
 		2 & 0.5 & 	0.510 \\ \hline
+		\rowcolor{yellow} 1.68 & 0.54 & 	0.494 \\ \hline
 		1.7 & 0.6 & 	0.478 \\ \hline
 		1.5 & 0.5 & 	0.462 \\ \hline
 		0.9 & 0.9 & 	0.457 \\ \hline
 		\rowcolor{teal} 1 & 1 & 	0.366 \\ \hline
-		\rowcolor{yellow} 1.68 & 0.54 & 	0.320 \\ \hline
 		1.5 & 0.4 & 	0.289 \\ \hline
 		120 & 30 & 	-0.007 \\ \hline
 		0.1 & 0.05 & 	-0.513 \\ \hline
@@ -148,6 +168,8 @@
 	\caption{Ocena algorytmu UCB-V w zależności od parametrów $c$ i $\zeta$}
 	\label{tab:ucbv_param}
 \end{table}
+
+Analizując tabelę \ref{tab:ucbv_param}, wnioskuje się, że algorytm działa najlepiej dla wartości $(c=1.4, \zeta=0.5)$. Wartości sugerowane przez \cite{tron} i \cite{ucbv} zostały ocenione gorzej. Podczas testów używano wyłącznie sugerowanej \textit{funkcji eksploracji}, przyjęto $\varepsilon=\zeta \cdot \ln N_i$.\\
 
 \begin{table}[!h]
 	\centering
@@ -168,7 +190,36 @@
 	\label{tab:ucbm_param}
 \end{table}
 
-\section{Weryfikacja hipotez}
+Algorytm UCB-Minimal wypadł najgorzej w porównaniu -- nawet najlepiej dobrane wartości parametrów $C_1$ i $C_2$ skutkowały ujemnym bilansem zwycięstw. Zgodnie z tabelą \ref{tab:ucbm_param}, algorytm gra najlepiej w konfiguracji $(C_1 = 11, C_2 = 1)$. Z kolei referencyjne wartości parametrów, zaczerpnięte odpowiednio z \cite{ucbminimal} i \cite{tron}, wiążą się z niższą oceną algorytmu.
+
+\clearpage
+
+Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oceniony w rozgrywkach z algorytmem heurystycznym. W celu porównania skuteczności każdego z algorytmów, wyznaczono również średnie arytmetyczne wartości funkcji $REWARD$ po wszystkich rozgrywkach. Uzyskano odpowiednio oceny:
+
+\begin{itemize}
+	\item UCB-V -- 0.306,
+	\item UCB1 -- 0.112,
+	\item UCB-Minimal -- -0.472.
+\end{itemize}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|} \hline
+		Algorytm & Ocena \\ \hline
+		UCBV $(1.4, 0.5)$ &	0.560 \\ \hline
+		UCB1 $(2)$ &	0.552 \\ \hline
+		UCB1 $(1.41)$ &	0.529 \\ \hline
+		UCBV $(2, 0.5)$ &	0.510 \\ \hline
+		UCB1 $(1.7)$ &	0.484 \\ \hline
+		UCBV $(1.7, 0.6)$ &	0.478 \\ \hline
+		UCBV $(1.5, 0.5)$ &	0.462 \\ \hline
+		UCBV $(0.9, 0.9)$ &	0.457 \\ \hline
+		UCB1 $(3)$ &	0.438 \\ \hline
+		UCBV $(1.1, 1.1)$ &	0.427 \\ \hline
+	\end{tabular}
+	\caption{Ocena najlepszych konfiguracji algorytmów}
+	\label{tab:all_params}
+\end{table}
 
 \begin{thebibliography}{20}
 	\bibitem[1]{connect4knowledge} Victor Allis, \emph{A Knowledge-based Approach of Connect-Four}, Department of Mathematics and Computer Science Vrije Universiteit Amsterdam, The Netherlands. %https://bit.ly/2SPdKQt
