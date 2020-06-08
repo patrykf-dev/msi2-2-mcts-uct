@@ -1,0 +1,181 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{titling}
+\usepackage[OT4]{fontenc}
+\usepackage[english,polish]{babel}
+\usepackage{amsmath, amsfonts, amsthm, latexsym}
+
+% Margins in document
+\usepackage[left=2.5cm, right=2.5cm, top=3.5cm]{geometry}
+
+% Indentation at the beginning of chapters/sections
+\usepackage{indentfirst}
+
+% Ceiling functions
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+% Avoid  colons before tables' empty captions and change caption
+\usepackage{caption}
+\captionsetup[table]{name=Tab.}
+\captionsetup[figure]{name=Rys.}
+
+% Don't know why, it starts from 2
+\addtocounter{table}{0}
+
+% Rename tables' suffix
+\renewcommand{\tablename}{Tab.}
+
+% Graphicx setup
+\usepackage{graphicx}
+\graphicspath{{graphics/}{../graphics/}}
+
+\usepackage[table,x11names]{xcolor}
+
+% No separator between items
+\usepackage{enumitem}
+\setlist{nolistsep}
+
+% Pagebreak before every \section
+\let\oldsection\section
+\renewcommand\section{\clearpage\oldsection}
+
+% Bigger padding in tabulars
+\usepackage{array}
+\setlength\extrarowheight{3pt}
+
+% Itemize in tabulars (avoid big margins with minipage)
+\newcommand{\tabbeditemize}[1]{
+	\begin{minipage}[t]{0.4\textwidth}
+		\begin{itemize}[topsep=0mm,partopsep=0mm,leftmargin=4mm]
+			#1
+		\end{itemize}
+\end{minipage}}
+
+% listings
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\definecolor{codegreen}{rgb}{0,0.7,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+	language=Python,
+	deletekeywords={from},
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=4
+}
+
+% Nazwa gry
+\newcommand{\nazwagry}{\textit{Connect4}}
+
+% DOCUMENT
+\title{
+	Zastosowanie algorytmu UCT do stworzenia sztucznej inteligencji grającej w \nazwagry\\
+	\large Dokumentacja końcowa}
+
+\author{Patryk Fijałkowski \\ Mateusz Burczaniuk}
+
+% ============================================
+% CONTENT ====================================
+% ============================================
+
+\begin{document}
+\begin{titlingpage}
+	\maketitle
+	\vspace{3cm}
+\end{titlingpage}
+
+\section{Opis problemu}
+\section{Hipotezy badawcze}
+\section{Wyniki eksperymentów}
+
+Średnie
+\begin{itemize}
+	\item UCB-V - 0.306
+	\item UCB1 - 0.112
+	\item UCB-Minimal - -0.472
+\end{itemize}
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|} \hline
+	Wartość $c$ & Ocena \\ \hline
+	2 &	0.552 \\ \hline
+	1.41 &	0.529 \\ \hline
+	1.7 &	0.484 \\ \hline
+	1.6 &	0.425 \\ \hline
+	1.5 &	0.415 \\ \hline
+	1.45 &	0.401 \\ \hline
+	1 &	0.153 \\ \hline
+	0.09 &	-0.448 \\ \hline
+	0.01 &	-0.563 \\ \hline
+	0 & -0.702 \\ \hline
+\end{tabular}
+\caption{Ocena algorytmu UCB1 w zależności od parametru eksploracji}
+\label{tab:ucb1_param}
+\end{table}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|c|} \hline
+		Wartość $c$ & Wartość $\zeta$ & Ocena \\ \hline
+		1.4 & 0.5 & 	0.560 \\ \hline
+		2 & 0.5 & 	0.510 \\ \hline
+		1.7 & 0.6 & 	0.478 \\ \hline
+		1.5 & 0.5 & 	0.462 \\ \hline
+		0.9 & 0.9 & 	0.457 \\ \hline
+		\rowcolor{teal} 1 & 1 & 	0.366 \\ \hline
+		\rowcolor{yellow} 1.68 & 0.54 & 	0.320 \\ \hline
+		1.5 & 0.4 & 	0.289 \\ \hline
+		120 & 30 & 	-0.007 \\ \hline
+		0.1 & 0.05 & 	-0.513 \\ \hline
+	\end{tabular}
+	\caption{Ocena algorytmu UCB-V w zależności od parametrów $c$ i $\zeta$}
+	\label{tab:ucbv_param}
+\end{table}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|c|} \hline
+		Wartość $C_1$ & Wartość $C_2$ & Ocena \\ \hline
+		11 & 1 & 	-0.091 \\ \hline
+		\rowcolor{teal} 2.5 & 1 & 	-0.272 \\ \hline
+		2.9 & 1.4 & 	-0.289 \\ \hline
+		12 & 5 & 	-0.297 \\ \hline
+		\rowcolor{yellow} 8.4 & 1.8 & 	-0.349 \\ \hline
+		3 & 2 & 	-0.366 \\ \hline
+		1.8 & 8.4 & 	-0.452 \\ \hline
+		3 & 3 & 	-0.508 \\ \hline
+		26 & 26 & 	-0.522 \\ \hline
+		9.4 & 2.8 & 	-0.556 \\ \hline
+	\end{tabular}
+	\caption{Ocena algorytmu UCB-Minimal w zależności od parametrów $C_1$ i $C_2$}
+	\label{tab:ucbm_param}
+\end{table}
+
+\section{Weryfikacja hipotez}
+
+\begin{thebibliography}{20}
+	\bibitem[1]{connect4knowledge} Victor Allis, \emph{A Knowledge-based Approach of Connect-Four}, Department of Mathematics and Computer Science Vrije Universiteit Amsterdam, The Netherlands. %https://bit.ly/2SPdKQt
+	\bibitem[2]{banditbased} Levente Kocsis, Csaba Szepesvári, \emph{Bandit based Monte-Carlo Planning}, European Conference on Machine Learning, Berlin, Germany, September 18--22, 2006.
+	\bibitem[3]{mctsanalysis} Steven James, George Konidaris, Benjamin Rosman, \emph{An Analysis of Monte Carlo Tree Search}, University of the Witwatersrand, Johannesburg, South Africa.
+	\bibitem[4]{ucbminimal} Francis Maes, Louis Wehenkel, Damien Ernst, \emph{Automatic Discovery of Ranking Formulas for Playing with Multi-armed Bandits}, European Workshop on Reinforcement Learning, Athens, Greece, September 9--11, 2011.
+	\bibitem[5]{tron} Pierre Perick, David L. St-Pierre, Francis Maes, Damien Ernst, \emph{Comparison of Different Selection Strategies in Monte-Carlo Tree Search for the Game of Tron},  IEEE Conference on Computational Intelligence and Games, Granada, Spain, September 12--15, 2012. %https://bit.ly/2y2cvq2
+	\bibitem[6]{ucbv} Jean-Yves Audibert, Remi Munos, Csaba Szepesvári, \emph{Tuning Bandit Algorithms in Stochastic Environments}, Algorithmic Learning Theory 18th International Conference, Sendai, Japan, October 1--4, 2007. %https://bit.ly/3d9WcX9
+\end{thebibliography}
+\end{document}
