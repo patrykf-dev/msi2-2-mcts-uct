@@ -112,6 +112,42 @@
 \end{titlingpage}
 
 \section{Opis problemu}
+Monte-Carlo Tree Search to heurystyka, której celem jest podejmowanie decyzji w pewnych zadaniach sztucznej inteligencji, na przykład wybieranie ruchów w grach. Metoda jest oparta na przeszukiwaniu możliwych stanów gry zapisanych w wierzchołkach drzewa i losowym symulowaniu rozgrywek. Algorytmy MCTS opierają się na rozbudowywaniu drzewa ze stanami gry przez iteracyjne wykonywanie czterech faz. Jednym z najpowszechniejszych wariantów MCTS jest algorytm UCT. W niniejszej pracy autorzy zbadają 3 warianty metody UCT: UCB1, UCB-V i UCB-Minimal. Ponadto, zweryfikowane zostaną hipotezy postawione w dokumentacji wstępnej projektu.
+
+
+\subsection{Algorytm UCT} \label{subsec:uct}
+UCT jest wariantem metody MCTS, który stara się zachować równowagę między eksploatacją bardziej obiecujących ruchów a eksploracją tych rzadko odwiedzonych. Formuła, która odpowiada za wyznaczenie najbardziej obiecującego wierzchołka w fazie wyboru MCTS jest przedstawiona jako wyrażenie (\ref{formula:ucb}).
+
+\begin{equation}\label{formula:ucb}
+\frac{w_i}{n_i} + c \sqrt{\frac{\ln N_i}{n_i}}
+\end{equation}
+
+W wyrażeniu (\ref{formula:ucb}), indeks $i$ odnosi się do liczby wykonanych przez algorytm iteracji, czyli czterech faz MCTS. W pierwszym składniku sumy wyrażenia (\ref{formula:ucb}), licznik $w_i$ oznacza sumę wszystkich wypłat w danym węźle, a mianownik $n_i$ oznacza liczbę rozegranych symulacji. Zatem ułamek ten przyjmuje wartości większe dla ruchów o większej średniej wygranej, co odpowiada ze eksploatację drzewa. Drugi składnik sumy wyrażenia (\ref{formula:ucb}) przyjmuje wartości większe dla wierzchołków, dla których wykonano mniej symulacji i odpowiada eksploracji drzewa. $N_i=\sum_i n_i$, a $c$ jest parametrem eksploracji, który może być dostosowany do badanego problemu.
+
+
+\subsubsection{Usprawnienie UCB-Minimal} \label{subsec:ucbmin}
+Przedstawione w \cite{ucbminimal} usprawnienie UCB-Minimal polega na zastosowaniu wzoru (\ref{formula:ucbminimal}) w celu wyboru najbardziej obiecującego wierzchołka w fazie selekcji.
+
+\begin{equation}\label{formula:ucbminimal}
+\frac{w_i}{n_i} + \frac{C_1}{n_i^{C_2}}
+\end{equation}
+
+W wyrażeniu (\ref{formula:ucbminimal}), $C_1$ jest parametrem balansującym eksploatację i eksplorację drzewa. Z kolei $C_2$ to parametr, którego zadaniem jest skorygować zmniejszenie wpływu eksploracji, które następuje z kolejnymi iteracjami algorytmu. Dobór parametrów powinien zostać wykonany empirycznie -- autorzy \cite{ucbminimal} sugerują wartości $C_1=2.5, C_2 = 1$ jako ogólnie optymalne. Przykładowo, badania autorów \cite{tron} wykazały, że najlepiej sprawdzają się wartości $C_1 = 8.4, C_2 = 1.8$.
+
+\subsubsection{Usprawnienie UCB-V} \label{subsec:ucbv}
+Przedstawione w \cite{ucbv} usprawnienie UCB-V opiera swoją skuteczność na wykorzystaniu wariancji wypłat powodując, że algorytm w fazie selekcji wybiera jak najlepsze i jak najmniej zróżnicowane ruchy w kontekście oczekiwanej wypłaty. UCB-V polega na zastosowaniu wzoru (\ref{formula:ucbv}) w celu wyboru najbardziej obiecującego wierzchołka w fazie selekcji.
+
+\begin{equation}\label{formula:ucbv}
+\frac{w_i}{n_i} + \sqrt{2\frac{\sigma^2_i \cdot \varepsilon}{n_i}} + c \frac{3\cdot\varepsilon}{n_i}
+\end{equation}
+
+W wyrażeniu (\ref{formula:ucbv}), $\sigma^2_i$ oznacza wariancję wypłat w danym węźle, a $\varepsilon$ to tak zwana \textit{funkcja eksploracji}. Zgodnie z sugestią autorów \cite{ucbv}, za \textit{funkcję eksploracji} przyjęta zostanie postać zaprezentowana w (\ref{formula:ucbvexploration}), gdzie $\zeta$ jest parametrem, który powinien zostać dopasowany empirycznie.
+
+\begin{equation}\label{formula:ucbvexploration}
+\varepsilon = \zeta\cdot\ln N_i
+\end{equation}
+
+Autorzy \cite{ucbv} sugerują wartości parametrów $c=1, \zeta=1$ jako optymalne dla prezentowanego usprawnienia. Z drugiej strony, w zastosowaniu go do gry \textit{Tron}, autorzy pracy \cite{tron} najlepsze efekty zaobserwowali dla wartości parametrów $c=1.68, \zeta = 0.54$.
 
 
 \section{Sposób przeprowadzenia testów}
@@ -122,9 +158,11 @@ Każdy z przeprowadzonych testów będzie w formie pełnej rozgrywki \textit{Con
 \end{equation}
 
 
-
 \section{Weryfikacja hipotez}
-\subsection{Optymalne parametry}
+W rozdziałach \ref{subs:params} - \ref{subs:variant} zweryfikowano hipotezy postawione w dokumentacji wstępnej projektu. W rozdziale \ref{subs:params} autorzy próbują empirycznie wyznaczyć najbardziej optymalne wartości parametrów dla każdego z trzech wariantów UCT, sugerując się wartościami referencyjnymi zasięgniętymi z innych badań. Rozdział \ref{subs:iterations} jest poświęcony sprawdzeniu wpływu liczby iteracji MCTS na jakość podejmowanych decyzji przez warianty UCT. Finalnie, w rozdziale \ref{subs:variant} wyznaczono najlepszą konfigurację UCT.
+
+
+\subsection{Optymalne parametry} \label{subs:params}
 W celu wyznaczenia najlepszych parametrów dla każdego z trzech analizowanych wariantów UCT, przeprowadzono rozgrywki z algorytmem heurystycznym. Dla każdego wariantu sprawdzono 20 próbnych konfiguracji parametrów, a każdą z konfiguracji sprawdzono dla 15 wartości ziarna generatora liczb losowych, by zmniejszyć wpływ losowości na działanie algorytmu. W każdym teście algorytm MCTS wykonywał 15.000 iteracji. Jako ocenę każdej konfiguracji przyjęto średnią arytmetyczną wartości funkcji $REWARD$ otrzymanych po zakończonych rozgrywkach. Wyniki testów ukazane są w tabelach \ref{tab:ucb1_param} - \ref{tab:ucbm_param}.
 
 \begin{table}[!h]
@@ -156,7 +194,7 @@ Jak widać w tabeli \ref{tab:ucb1_param}, algorytm UCB1 został najlepiej ocenio
 		Wartość $c$ & Wartość $\zeta$ & Ocena \\ \hline
 		1.4 & 0.5 & 	0.560 \\ \hline
 		2 & 0.5 & 	0.510 \\ \hline
-		\rowcolor{yellow} 1.68 & 0.54 & 	0.494 \\ \hline
+		\rowcolor{teal} 1.68 & 0.54 & 	0.494 \\ \hline
 		1.7 & 0.6 & 	0.478 \\ \hline
 		1.5 & 0.5 & 	0.462 \\ \hline
 		0.9 & 0.9 & 	0.457 \\ \hline
@@ -169,7 +207,7 @@ Jak widać w tabeli \ref{tab:ucb1_param}, algorytm UCB1 został najlepiej ocenio
 	\label{tab:ucbv_param}
 \end{table}
 
-Analizując tabelę \ref{tab:ucbv_param}, wnioskuje się, że algorytm działa najlepiej dla wartości $(c=1.4, \zeta=0.5)$. Wartości sugerowane przez \cite{tron} i \cite{ucbv} zostały ocenione gorzej. Podczas testów używano wyłącznie sugerowanej \textit{funkcji eksploracji}, przyjęto $\varepsilon=\zeta \cdot \ln N_i$.\\
+Analizując tabelę \ref{tab:ucbv_param}, wnioskuje się, że algorytm UCB-V działa najlepiej w konfiguracji $(c=1.4, \zeta=0.5)$. Wartości sugerowane przez \cite{tron} i \cite{ucbv} zostały ocenione gorzej. Podczas testów używano wyłącznie sugerowanej \textit{funkcji eksploracji}, przyjęto $\varepsilon=\zeta \cdot \ln N_i$.\\
 
 \begin{table}[!h]
 	\centering
@@ -179,7 +217,7 @@ Analizując tabelę \ref{tab:ucbv_param}, wnioskuje się, że algorytm działa n
 		\rowcolor{teal} 2.5 & 1 & 	-0.272 \\ \hline
 		2.9 & 1.4 & 	-0.289 \\ \hline
 		12 & 5 & 	-0.297 \\ \hline
-		\rowcolor{yellow} 8.4 & 1.8 & 	-0.349 \\ \hline
+		\rowcolor{teal} 8.4 & 1.8 & 	-0.349 \\ \hline
 		3 & 2 & 	-0.366 \\ \hline
 		1.8 & 8.4 & 	-0.452 \\ \hline
 		3 & 3 & 	-0.508 \\ \hline
@@ -190,7 +228,7 @@ Analizując tabelę \ref{tab:ucbv_param}, wnioskuje się, że algorytm działa n
 	\label{tab:ucbm_param}
 \end{table}
 
-Algorytm UCB-Minimal wypadł najgorzej w porównaniu -- nawet najlepiej dobrane wartości parametrów $C_1$ i $C_2$ skutkowały ujemnym bilansem zwycięstw. Zgodnie z tabelą~\ref{tab:ucbm_param}, algorytm gra najlepiej w konfiguracji $(C_1 = 11, C_2 = 1)$. Z kolei referencyjne wartości parametrów, zaczerpnięte odpowiednio z \cite{ucbminimal} i \cite{tron}, wiążą się z niższą oceną algorytmu.
+Algorytm UCB-Minimal wypadł najgorzej w porównaniu -- nawet najlepiej dobrane wartości parametrów $C_1$ i $C_2$ skutkowały ujemnym bilansem zwycięstw i porażek. Zgodnie z tabelą~\ref{tab:ucbm_param}, algorytm gra najlepiej w konfiguracji $(C_1 = 11, C_2 = 1)$. Z kolei referencyjne wartości parametrów, zaczerpnięte odpowiednio z \cite{ucbminimal} i \cite{tron}, wiążą się z niższą oceną algorytmu.
 
 \clearpage
 
@@ -213,17 +251,23 @@ Algorytm UCB-Minimal wypadł najgorzej w porównaniu -- nawet najlepiej dobrane 
 	\label{tab:all_params}
 \end{table}
 
-Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oceniony w rozgrywkach z algorytmem heurystycznym. W celu porównania skuteczności każdego z algorytmów, wyznaczono również średnie arytmetyczne wartości funkcji $REWARD$ po wszystkich rozgrywkach. Uzyskano odpowiednio oceny:
+Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oceniony w rozgrywkach z algorytmem heurystycznym. W celu porównania skuteczności każdego z algorytmów, wyznaczono również średnie arytmetyczne wartości funkcji $REWARD$ po wszystkich rozgrywkach. Średnie oceny algorytmów ukazano w tabeli \ref{tab:avg_grade}.
 
-\begin{itemize}
-	\item UCB-V -- 0.306,
-	\item UCB1 -- 0.112,
-	\item UCB-Minimal -- -0.472.
-\end{itemize}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|} \hline
+		Algorytm & Średnia ocena \\ \hline
+		UCB-V & 0.306 \\ \hline
+		UCB1 & 0.112 \\ \hline
+		UCB-Minimal & -0.472 \\ \hline
+	\end{tabular}
+	\caption{Średnie oceny algorytmów}
+	\label{tab:avg_grade}
+\end{table}
 
 \clearpage
 
-\subsection{Wpływ iteracji}
+\subsection{Wpływ iteracji} \label{subs:iterations}
 W celu sprawdzenia, jak liczba iteracji MCTS wpływa na poprawę decyzji algorytmu, przeprowadzono testy dla najbardziej optymalnych konfiguracji parametrów każdego wariantu: UCB1, UCB-V i UCB-Minimal. Oceniono rozgrywki z algorytmem heurystycznym po wykonaniu 100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000, 17500 i 20000 iteracji.
 
 \begin{figure}[h]
@@ -233,32 +277,58 @@ W celu sprawdzenia, jak liczba iteracji MCTS wpływa na poprawę decyzji algoryt
 	\label{rys:iterations}
 \end{figure}
 
-Wyniki analiz zostały zaprezentowane na wykresie na rysunku \ref{rys:iterations}. Ocena każdego z algorytmów osiąga stosunkowo wysokie wartości przy liczbie iteracji 2500, następnie maleje, by przy liczbie iteracji 15000 osiągnąć najwyższą wartość. Wartym zauważenia jest również fakt, że algorytm UCB-V osiąga relatywnie najlepsze wyniki przy najniższych zakresach iteracji.
+Wyniki analiz zostały zaprezentowane na wykresie na rysunku \ref{rys:iterations}. Ocena każdego z algorytmów osiąga stosunkowo wysokie wartości przy liczbie iteracji 2500, następnie maleje, by przy liczbie iteracji 15000 osiągnąć najwyższą wartość. Wykonanie 2500 iteracji MCTS zdaje się być najbardziej optymalnym rozwiązaniem, równoważącym jakość podejmowanych decyzji i czas obliczeń. Wartym zauważenia jest również fakt, że algorytm UCB-Minimal osiąga relatywnie najlepsze wyniki przy najniższych zakresach iteracji, a przy 2500 iteracji uzyskuje najwyższe osiągane przez siebie oceny.
 
 \clearpage
 
-\subsection{Najlepszy wariant}
+\subsection{Najlepszy wariant} \label{subs:variant}
+Najlepszy z wariantów zostanie wyłoniony na podstawie rozgrywek \textit{każdy z każdym}. Zostały wybrane 4 najlepsze konfiguracje algorytmów i pomiędzy każdą parą przeprowadzono 80 rozgrywek. Pierwszą połowę z nich rozpoczynał agent korzystający z pierwszej konfiguracji, a drugą -- korzystający z drugiej. Wyniki przeprowadzonych testów ukazano w tabeli \ref{tab:best_variant}, \ref{tab:best_variant_sum} i \ref{tab:draw_count}.
+
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|} \hline
-		& UCBV $(1.4, 0.5)$ & UCB1 $(2)$ & UCB1 $(1.41)$ & UCBV $(2, 0.5)$ \\ \hline
-		UCBV $(2, 0.5)$ & 0 & 0 & 0 & \cellcolor{lightgray} \\ \hline
-		UCB1 $(1.41)$ & 0 & 0 & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
-		UCB1 $(2)$ & 0 & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray}  \\ \hline
-		UCBV $(1.4, 0.5)$ & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
+		& UCB-V $(1.4, 0.5)$ & UCB1 $(2)$ & UCB1 $(1.41)$ & UCB-V $(2, 0.5)$ \\ \hline
+		UCBV $(2, 0.5)$ & 0.1316 & -0.0597 & 0.0701 & \cellcolor{lightgray} \\ \hline
+		UCB1 $(1.41)$ & -0.0336 & -0.1616 & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
+		UCB1 $(2)$ & 0.1611 & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray}  \\ \hline
+		UCB-V $(1.4, 0.5)$ & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
 	\end{tabular}
 	\caption{Ocena najlepszych konfiguracji algorytmów}
 	\label{tab:best_variant}
 \end{table}
 
-Najlepszy z wariantów zostanie wyłoniony na podstawie rozegrania partii każdy z każdym.
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|} \hline
+	Algorytm & Ocena \\ \hline
+	UCB1 $(2)$ & 0.3824 \\ \hline
+	UCB-V $(2, 0.5)$ & 0.142 \\ \hline
+	UCB-V $(1.4, 0.5)$ &	 -0.2591 \\ \hline
+	UCB1 $(1.41)$ &	-0.2653 \\ \hline
+\end{tabular}
+\caption{Sumaryczne oceny algorytmów}
+\label{tab:best_variant_sum}
+\end{table}
+
+Zgodnie z wynikami prezentowanymi w tabeli \ref{tab:best_variant}, wariant algorytmu UCB1 ($c=2$) wygrał w ocenach ze wszystkimi pozostałymi wariantami i w tabeli \ref{tab:best_variant_sum} widać, że uzyskał również najwyższą sumaryczną ocenę. Wariant UCB-V ($c=2, \zeta=0.5$) zajął w rankingu drugie miejsce, przegrywając nieznacznie z wariantem UCB1 ($c=2$). Warto zaznaczyć, że zgodnie z tabelą \ref{tab:draw_count}, wariant UCB-V ($c=2, \zeta=0.5$) doprowadził do największego odsetku remisów (13.4\%) podczas rozgrywek, co znacząco wpłynęło na pogorszenie jego oceny.
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|} \hline
+		& UCB-V $(1.4, 0.5)$ & UCB1 $(2)$ & UCB1 $(1.41)$ & UCB-V $(2, 0.5)$ \\ \hline
+		UCB-V $(2, 0.5)$ & 7.5\% & 16.25\% & 16.25\% & \cellcolor{lightgray} \\ \hline
+		UCB1 $(1.41)$ & 12.5\% & 5\% & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
+		UCB1 $(2)$ & 8.75\% & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray}  \\ \hline
+		UCB-V $(1.4, 0.5)$ & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} & \cellcolor{lightgray} \\ \hline
+	\end{tabular}
+	\caption{Odsetek remisów w przeprowadzonych rozgrywkach}
+	\label{tab:draw_count}
+\end{table}
 
 \begin{thebibliography}{20}
-	\bibitem[1]{connect4knowledge} Victor Allis, \emph{A Knowledge-based Approach of Connect-Four}, Department of Mathematics and Computer Science Vrije Universiteit Amsterdam, The Netherlands. %https://bit.ly/2SPdKQt
-	\bibitem[2]{banditbased} Levente Kocsis, Csaba Szepesvári, \emph{Bandit based Monte-Carlo Planning}, European Conference on Machine Learning, Berlin, Germany, September 18--22, 2006.
-	\bibitem[3]{mctsanalysis} Steven James, George Konidaris, Benjamin Rosman, \emph{An Analysis of Monte Carlo Tree Search}, University of the Witwatersrand, Johannesburg, South Africa.
-	\bibitem[4]{ucbminimal} Francis Maes, Louis Wehenkel, Damien Ernst, \emph{Automatic Discovery of Ranking Formulas for Playing with Multi-armed Bandits}, European Workshop on Reinforcement Learning, Athens, Greece, September 9--11, 2011.
-	\bibitem[5]{tron} Pierre Perick, David L. St-Pierre, Francis Maes, Damien Ernst, \emph{Comparison of Different Selection Strategies in Monte-Carlo Tree Search for the Game of Tron},  IEEE Conference on Computational Intelligence and Games, Granada, Spain, September 12--15, 2012. %https://bit.ly/2y2cvq2
-	\bibitem[6]{ucbv} Jean-Yves Audibert, Remi Munos, Csaba Szepesvári, \emph{Tuning Bandit Algorithms in Stochastic Environments}, Algorithmic Learning Theory 18th International Conference, Sendai, Japan, October 1--4, 2007. %https://bit.ly/3d9WcX9
+	\bibitem[1]{banditbased} Levente Kocsis, Csaba Szepesvári, \emph{Bandit based Monte-Carlo Planning}, European Conference on Machine Learning, Berlin, Germany, September 18--22, 2006.
+	\bibitem[2]{ucbminimal} Francis Maes, Louis Wehenkel, Damien Ernst, \emph{Automatic Discovery of Ranking Formulas for Playing with Multi-armed Bandits}, European Workshop on Reinforcement Learning, Athens, Greece, September 9--11, 2011.
+	\bibitem[3]{tron} Pierre Perick, David L. St-Pierre, Francis Maes, Damien Ernst, \emph{Comparison of Different Selection Strategies in Monte-Carlo Tree Search for the Game of Tron},  IEEE Conference on Computational Intelligence and Games, Granada, Spain, September 12--15, 2012. %https://bit.ly/2y2cvq2
+	\bibitem[4]{ucbv} Jean-Yves Audibert, Remi Munos, Csaba Szepesvári, \emph{Tuning Bandit Algorithms in Stochastic Environments}, Algorithmic Learning Theory 18th International Conference, Sendai, Japan, October 1--4, 2007. %https://bit.ly/3d9WcX9
 \end{thebibliography}
 \end{document}
