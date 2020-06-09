@@ -39,15 +39,15 @@ namespace ConnectFourApplication
 
         private UCB1Decider GetDefaultUCB1Decider()
         {
-            return new UCB1Decider(1.41f);
+            return new UCB1Decider(2f);
         }
         private UCBMDecider GetDefaultUCBMDecider()
         {
-            return new UCBMDecider(8.4f, 1.8f);
+            return new UCBMDecider(11f, 1f);
         }
         private UCBVDecider GetDefaultUCBVDecider()
         {
-            return new UCBVDecider(1.68f, 0.54f);
+            return new UCBVDecider(2f, 0.5f);
         }
     }
 }

@@ -8,6 +8,8 @@ namespace MonteCarloTreeSearchLib.Algorithm
         public UCB1Decider ucb1Decider { get; set; }
         public UCBMDecider ucbmDecider { get; set; }
         public UCBVDecider ucbvDecider { get; set; }
+        public int MaxIterations { get; set; } = 15000;
+
         private AgentStrategy _strategy;
 
         public AgentDecider(AgentStrategy strategy, UCB1Decider ucb1Decider, UCBMDecider ucbmDecider, UCBVDecider ucbvDecider)
@@ -41,7 +43,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         private int PerformUCTDecision(ConnectFourBoard board, UCBBaseDecider decider)
         {
             var root = new MCNode(new ConnectFourGameState(board));
-            var abstractMove = new MCTreeSearch(root, decider).CalculateNextMove();
+            var abstractMove = new MCTreeSearch(root, decider, MaxIterations).CalculateNextMove();
             var gameMove = abstractMove as ConnectFourGameMove;
             return gameMove.HoleIndex;
         }
