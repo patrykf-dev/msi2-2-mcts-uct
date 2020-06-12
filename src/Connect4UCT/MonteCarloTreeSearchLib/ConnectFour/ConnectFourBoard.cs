@@ -133,11 +133,6 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
         private GamePhase CheckMoveResult(int column)
         {
-            if (BoardFull())
-            {
-                return GamePhase.Draw;
-            }
-
             int playerIndex = PlayerHelpers.GetOpposingPlayer(CurrentPlayer);
 
             // Horizontal check
@@ -235,6 +230,11 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             if (descDiagCount >= 4)
             {
                 return PlayerHelpers.GetPhaseOnPlayerWin(playerIndex);
+            }
+
+            if (BoardFull())
+            {
+                return GamePhase.Draw;
             }
 
             return GamePhase.InProgress;

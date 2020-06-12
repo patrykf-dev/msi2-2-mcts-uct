@@ -78,7 +78,14 @@ namespace ConnectFourApplication
                 var player2 = PlayerTypeExtensions.GetPlayerType(cbxPlayer2.SelectedIndex);
                 _game = new Game(player1, player2);
             }
+            RandomizeSeeds();
             HandleMovePerformed(-1);
+        }
+
+        private void RandomizeSeeds()
+        {
+            Random rnd = new Random();
+            RandomUtils.SetSeed(rnd.Next(0, 9999999));
         }
 
         private void HandleMovePerformed(int move)

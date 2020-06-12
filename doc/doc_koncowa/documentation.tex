@@ -112,7 +112,7 @@
 \end{titlingpage}
 
 \section{Opis problemu}
-Monte-Carlo Tree Search to heurystyka, której celem jest podejmowanie decyzji w pewnych zadaniach sztucznej inteligencji, na przykład wybieranie ruchów w grach. Metoda jest oparta na przeszukiwaniu możliwych stanów gry zapisanych w wierzchołkach drzewa i losowym symulowaniu rozgrywek. Algorytmy MCTS opierają się na rozbudowywaniu drzewa ze stanami gry przez iteracyjne wykonywanie czterech faz. Jednym z najpowszechniejszych wariantów MCTS jest algorytm UCT. W niniejszej pracy autorzy zbadają 3 warianty metody UCT: UCB1, UCB-V i UCB-Minimal. Ponadto, zweryfikowane zostaną hipotezy postawione w dokumentacji wstępnej projektu.
+Monte-Carlo Tree Search to heurystyka, której celem jest podejmowanie decyzji w pewnych zadaniach sztucznej inteligencji, na przykład wybieranie ruchów w grach. Metoda jest oparta na przeszukiwaniu możliwych stanów gry zapisanych w wierzchołkach drzewa i losowym symulowaniu rozgrywek. Algorytmy MCTS opierają się na rozbudowywaniu drzewa ze stanami gry przez iteracyjne wykonywanie czterech faz. Jednym z najpowszechniejszych wariantów MCTS jest algorytm UCT. W niniejszej pracy autorzy zbadali 3 warianty metody UCT: UCB1, UCB-V i UCB-Minimal. Ponadto, zweryfikowane zostaną hipotezy postawione w dokumentacji wstępnej projektu.
 
 
 \subsection{Algorytm UCT} \label{subsec:uct}
@@ -159,11 +159,11 @@ Każdy z przeprowadzonych testów będzie w formie pełnej rozgrywki \textit{Con
 
 
 \section{Weryfikacja hipotez}
-W rozdziałach \ref{subs:params} - \ref{subs:variant} zweryfikowano hipotezy postawione w dokumentacji wstępnej projektu. W rozdziale \ref{subs:params} autorzy próbują empirycznie wyznaczyć najbardziej optymalne wartości parametrów dla każdego z trzech wariantów UCT, sugerując się wartościami referencyjnymi zasięgniętymi z innych badań. Rozdział \ref{subs:iterations} jest poświęcony sprawdzeniu wpływu liczby iteracji MCTS na jakość podejmowanych decyzji przez warianty UCT. Finalnie, w rozdziale \ref{subs:variant} wyznaczono najlepszą konfigurację UCT.
+W rozdziałach \ref{subs:params} - \ref{subs:variant} zweryfikowano hipotezy postawione w dokumentacji wstępnej projektu. W rozdziale \ref{subs:params} autorzy próbowali empirycznie wyznaczyć najbardziej optymalne wartości parametrów dla każdego z trzech wariantów UCT, sugerując się wartościami referencyjnymi zasięgniętymi z innych badań. Rozdział \ref{subs:iterations} jest poświęcony sprawdzeniu wpływu liczby iteracji MCTS na jakość podejmowanych decyzji przez warianty UCT. Finalnie, w rozdziale \ref{subs:variant} wyznaczono najlepszą konfigurację UCT.
 
 
 \subsection{Optymalne parametry} \label{subs:params}
-W celu wyznaczenia najlepszych parametrów dla każdego z trzech analizowanych wariantów UCT, przeprowadzono rozgrywki z algorytmem heurystycznym. Dla każdego wariantu sprawdzono 20 próbnych konfiguracji parametrów, a każdą z konfiguracji sprawdzono dla 15 wartości ziarna generatora liczb losowych, by zmniejszyć wpływ losowości na działanie algorytmu. W każdym teście algorytm MCTS wykonywał 15.000 iteracji. Jako ocenę każdej konfiguracji przyjęto średnią arytmetyczną wartości funkcji $REWARD$ otrzymanych po zakończonych rozgrywkach. Wyniki testów ukazane są w tabelach \ref{tab:ucb1_param} - \ref{tab:ucbm_param}.
+W celu wyznaczenia najlepszych parametrów dla każdego z trzech analizowanych wariantów UCT, przeprowadzono rozgrywki z algorytmem heurystycznym. Dla każdego wariantu sprawdzono 20 próbnych konfiguracji parametrów, a każdą z konfiguracji sprawdzono dla 15 wartości ziarna generatora liczb losowych, by zmniejszyć wpływ losowości na działanie algorytmu (łącznie 900 rozgrywek). W każdym teście algorytm MCTS wykonywał 15.000 iteracji. Jako ocenę każdej konfiguracji przyjęto średnią arytmetyczną wartości funkcji $REWARD$ otrzymanych po zakończonych rozgrywkach. Wyniki testów ukazane są w tabelach \ref{tab:ucb1_param} - \ref{tab:ucbm_param}.
 
 \begin{table}[!h]
 	\centering
@@ -234,32 +234,32 @@ Algorytm UCB-Minimal wypadł najgorzej w porównaniu -- nawet najlepiej dobrane 
 
 \begin{table}[!h]
 	\centering
-	\begin{tabular}{|c|c|} \hline
-		Algorytm & Ocena \\ \hline
-		UCBV $(1.4, 0.5)$ &	0.560 \\ \hline
-		UCB1 $(2)$ &	0.552 \\ \hline
-		UCB1 $(1.41)$ &	0.529 \\ \hline
-		UCBV $(2, 0.5)$ &	0.510 \\ \hline
-		UCB1 $(1.7)$ &	0.484 \\ \hline
-		UCBV $(1.7, 0.6)$ &	0.478 \\ \hline
-		UCBV $(1.5, 0.5)$ &	0.462 \\ \hline
-		UCBV $(0.9, 0.9)$ &	0.457 \\ \hline
-		UCB1 $(3)$ &	0.438 \\ \hline
-		UCBV $(1.1, 1.1)$ &	0.427 \\ \hline
+	\begin{tabular}{|c|c|c|} \hline
+		Algorytm & Ocena & Odsetek wygranych \\ \hline
+		UCBV $(1.4, 0.5)$ &	0.560 & 100\%\\ \hline
+		UCB1 $(2)$ &	0.552 & 100\% \\ \hline
+		UCB1 $(1.41)$ &	0.529 & 100\% \\ \hline
+		UCBV $(2, 0.5)$ &	0.510 & 100\%\\ \hline
+		UCB1 $(1.7)$ &	0.484 & 93\%\\ \hline
+		UCBV $(1.7, 0.6)$ &	0.478 & 87\%\\ \hline
+		UCBV $(1.5, 0.5)$ &	0.462 & 93\%\\ \hline
+		UCBV $(0.9, 0.9)$ &	0.457 & 87\%\\ \hline
+		UCB1 $(3)$ &	0.438 & 80\%\\ \hline
+		UCBV $(1.1, 1.1)$ &	0.427 & 80\%\\ \hline
 	\end{tabular}
 	\caption{Ocena najlepszych konfiguracji algorytmów}
 	\label{tab:all_params}
 \end{table}
 
-Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oceniony w rozgrywkach z algorytmem heurystycznym. W celu porównania skuteczności każdego z algorytmów, wyznaczono również średnie arytmetyczne wartości funkcji $REWARD$ po wszystkich rozgrywkach. Średnie oceny algorytmów ukazano w tabeli \ref{tab:avg_grade}.
+Tabela \ref{tab:all_params} prezentuje, który wariant UCT został najlepiej oceniony w rozgrywkach z algorytmem heurystycznym. W celu porównania skuteczności każdego z algorytmów, wyznaczono również średnie arytmetyczne wartości funkcji $REWARD$ po wszystkich 900 rozgrywkach. Średnie oceny algorytmów ukazano w tabeli \ref{tab:avg_grade}.
 
 \begin{table}[!h]
 	\centering
-	\begin{tabular}{|c|c|} \hline
-		Algorytm & Średnia ocena \\ \hline
-		UCB-V & 0.306 \\ \hline
-		UCB1 & 0.112 \\ \hline
-		UCB-Minimal & -0.472 \\ \hline
+	\begin{tabular}{|c|c|c|} \hline
+		Algorytm & Średnia ocena & Średni odsetek wygranych\\ \hline
+		UCB-V & 0.306 & 74\% \\ \hline
+		UCB1 & 0.112 & 61\% \\ \hline
+		UCB-Minimal & -0.472 & 18\% \\ \hline
 	\end{tabular}
 	\caption{Średnie oceny algorytmów}
 	\label{tab:avg_grade}
@@ -277,7 +277,7 @@ W celu sprawdzenia, jak liczba iteracji MCTS wpływa na poprawę decyzji algoryt
 	\label{rys:iterations}
 \end{figure}
 
-Wyniki analiz zostały zaprezentowane na wykresie na rysunku \ref{rys:iterations}. Ocena każdego z algorytmów osiąga stosunkowo wysokie wartości przy liczbie iteracji 2500, następnie maleje, by przy liczbie iteracji 15000 osiągnąć najwyższą wartość. Wykonanie 2500 iteracji MCTS zdaje się być najbardziej optymalnym rozwiązaniem, równoważącym jakość podejmowanych decyzji i czas obliczeń. Wartym zauważenia jest również fakt, że algorytm UCB-Minimal osiąga relatywnie najlepsze wyniki przy najniższych zakresach iteracji, a przy 2500 iteracji uzyskuje najwyższe osiągane przez siebie oceny.
+Wyniki analiz zostały zaprezentowane na wykresie na rysunku \ref{rys:iterations}. Ocena każdego z algorytmów osiąga stosunkowo wysokie wartości przy liczbie iteracji 2500, następnie maleje, by przy liczbie iteracji 15000 osiągnąć najwyższą wartość. Wykonanie 2500 iteracji MCTS zdaje się być najbardziej optymalnym rozwiązaniem, równoważącym jakość podejmowanych decyzji i czas obliczeń. Wartym zauważenia jest również fakt, że algorytm UCB-Minimal osiąga relatywnie najlepsze wyniki przy najniższych zakresach iteracji, a przy 2500 iteracji uzyskuje najwyższe osiągane przez siebie oceny. Przypuszczenia autorów z dokumentacji wstępnej, mówiące o liniowym charakterze wpływu liczby iteracji na jakość decyzji algorytmu, zostały niepotwierdzone.
 
 \clearpage
 
