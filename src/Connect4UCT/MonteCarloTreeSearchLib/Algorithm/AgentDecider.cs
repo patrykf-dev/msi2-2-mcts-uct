@@ -8,7 +8,7 @@ namespace MonteCarloTreeSearchLib.Algorithm
         public UCB1Decider ucb1Decider { get; set; }
         public UCBMDecider ucbmDecider { get; set; }
         public UCBVDecider ucbvDecider { get; set; }
-        public int MaxIterations { get; set; } = 15000;
+        public int MaxIterations { get; set; } = 16000;
 
         private AgentStrategy _strategy;
 
@@ -22,6 +22,11 @@ namespace MonteCarloTreeSearchLib.Algorithm
 
         public int PerformDecision(ConnectFourBoard board)
         {
+            if(board.TokensPlaced == 0)
+            {
+                return 3;
+            }
+
             switch (_strategy)
             {
                 case AgentStrategy.UCB1:

@@ -15,8 +15,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         public int[] ColumnHeights { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
-
-        private int _tokensPlaced;
+        public int TokensPlaced { get; private set; }
 
         public int[,] GetBoard() { return Board; }
 
@@ -24,7 +23,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
         {
             Width = width;
             Height = height;
-            _tokensPlaced = 0;
+            TokensPlaced = 0;
             Board = new int[height, width];
             ColumnHeights = new int[width];
             CurrentPlayer = 1;
@@ -38,7 +37,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
             Board[ColumnHeights[column], column] = CurrentPlayer;
             ColumnHeights[column]++;
-            _tokensPlaced++;
+            TokensPlaced++;
             SwitchCurrentPlayer();
 
             Phase = CheckMoveResult(column);
@@ -77,7 +76,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
             board.CurrentPlayer = CurrentPlayer;
             board.Width = Width;
             board.Height = Height;
-            board._tokensPlaced = _tokensPlaced;
+            board.TokensPlaced = TokensPlaced;
 
             for (int i = 0; i < Width; i++)
             {
@@ -123,7 +122,7 @@ namespace MonteCarloTreeSearchLib.ConnectFour
 
         private bool BoardFull()
         {
-            return _tokensPlaced == Width * Height;
+            return TokensPlaced == Width * Height;
         }
 
         private void SwitchCurrentPlayer()
